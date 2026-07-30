@@ -9,6 +9,12 @@
 </head>
 <body>
 
+<div class="ambient" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+
 <!-- ══════════════ AGE GATE ══════════════ -->
 <div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
   <div class="gate-inner">
@@ -71,13 +77,24 @@
       </div>
     </section>
 
-    <!-- Stats strip -->
-    <section class="strip" aria-label="Beta-Zahlen">
-      <span class="mono">1.204 Creator auf der Warteliste</span>
-      <span class="strip-sep" aria-hidden="true"></span>
-      <span class="mono">87 Collabs in der Closed Beta</span>
-      <span class="strip-sep" aria-hidden="true"></span>
-      <span class="mono">100&thinsp;% Profile verifiziert</span>
+    <!-- Marquee -->
+    <section class="marquee" aria-label="Beta-Zahlen">
+      <div class="marquee-inner">
+        <span class="mono">1.204 Creator auf der Warteliste</span><span class="marquee-dot"></span>
+        <span class="mono">Members only</span><span class="marquee-dot"></span>
+        <span class="mono">87 Collabs in der Closed Beta</span><span class="marquee-dot"></span>
+        <span class="mono">Off camera, auf Augenhöhe</span><span class="marquee-dot"></span>
+        <span class="mono">100&thinsp;% Profile verifiziert</span><span class="marquee-dot"></span>
+        <span class="mono">18+</span><span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-inner" aria-hidden="true">
+        <span class="mono">1.204 Creator auf der Warteliste</span><span class="marquee-dot"></span>
+        <span class="mono">Members only</span><span class="marquee-dot"></span>
+        <span class="mono">87 Collabs in der Closed Beta</span><span class="marquee-dot"></span>
+        <span class="mono">Off camera, auf Augenhöhe</span><span class="marquee-dot"></span>
+        <span class="mono">100&thinsp;% Profile verifiziert</span><span class="marquee-dot"></span>
+        <span class="mono">18+</span><span class="marquee-dot"></span>
+      </div>
     </section>
 
     <!-- Features -->
@@ -86,22 +103,22 @@
       <h2>Backstage, nicht Bühne.</h2>
       <p class="section-lede">Normale Dating-Apps sind für Creator kaputt: Man wird erkannt, gescreenshottet oder von Fans gematcht, die ein Abo mit einer Beziehung verwechseln. OffCam dreht das um.</p>
       <div class="feature-grid">
-        <article class="feature">
+        <article class="feature" data-reveal>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7 3v6c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
           <h3>Verifiziert oder gar nicht</h3>
           <p>Zugang nur mit bestätigtem Creator-Profil — OnlyFans, Fansly &amp; Co. werden beim Onboarding verknüpft. Keine Fakes, keine Katzenbilder-Accounts.</p>
         </article>
-        <article class="feature">
+        <article class="feature" data-reveal>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8c2-3 6-4 9-4s7 1 9 4c-2 3-6 4-9 4s-7-1-9-4z" transform="translate(0 4)"/><path d="M4 5l16 14"/></svg>
           <h3>Alias-first</h3>
           <p>Dein Profil sehen nur andere verifizierte Member. Künstlername statt Klarname, unscharfe Vorschau bis zum Match — du entscheidest, wann die Maske fällt.</p>
         </article>
-        <article class="feature">
+        <article class="feature" data-reveal>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
           <h3>Collab-Modus</h3>
           <p>Collabs sind der schnellste Wachstumshebel im Creator-Game. Filtere nach Nische, Plattform und Reichweite — und match für Content statt für Candlelight.</p>
         </article>
-        <article class="feature">
+        <article class="feature" data-reveal>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S5 16.4 2.7 12C1 8.5 3 5 6.5 5 8.5 5 10 6 12 8c2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>
           <h3>Matching, das passt</h3>
           <p>Dates, Collabs oder beides — du stellst ein, wofür du sichtbar bist. Wer dich liket, will dich. Nicht deinen Rabattcode.</p>
@@ -114,17 +131,17 @@
       <p class="eyebrow"><span class="rec-dot" aria-hidden="true"></span>So funktioniert's</p>
       <h2>In drei Takes drin.</h2>
       <div class="takes">
-        <article class="take">
+        <article class="take" data-reveal>
           <span class="take-label mono">Take 1</span>
           <h3>Verifizieren</h3>
           <p>Creator-Account verknüpfen, Alter bestätigen, fertig. Die Prüfung läuft einmalig — danach trägst du den goldenen Haken.</p>
         </article>
-        <article class="take">
+        <article class="take" data-reveal>
           <span class="take-label mono">Take 2</span>
           <h3>Profil bauen</h3>
           <p>Alias, Nische, Ziele: Dates, Collabs oder beides. Du zeigst nur, was du zeigen willst — der Rest bleibt off cam.</p>
         </article>
-        <article class="take">
+        <article class="take" data-reveal>
           <span class="take-label mono">Take 3</span>
           <h3>Matchen</h3>
           <p>Swipen, matchen, schreiben. Und wenn's passt: Kamera aus, Handy weg, echtes Leben an.</p>
@@ -133,7 +150,7 @@
     </section>
 
     <!-- CTA band -->
-    <section class="cta-band">
+    <section class="cta-band" data-reveal>
       <h2>Dein Feed hat genug Fans.<br>Jetzt fehlt noch jemand fürs Off.</h2>
       <button class="btn btn-primary" data-open-app>Demo ansehen</button>
     </section>
@@ -154,6 +171,7 @@
 
 <!-- ══════════════ APP DEMO ══════════════ -->
 <div id="app" hidden>
+  <div class="phone-wrap">
   <div class="phone">
     <header class="appbar">
       <span class="brand brand-app"><span class="brand-dot" aria-hidden="true"></span>OffCam <span class="chip mono">Demo</span></span>
@@ -225,7 +243,7 @@
     <section class="view" id="view-profile" hidden aria-label="Profil">
       <h2 class="view-title">Dein Profil</h2>
       <div class="me-card">
-        <span class="avatar avatar-lg" style="--ha:210;--hb:260" aria-hidden="true">A</span>
+        <span class="avatar-ring" aria-hidden="true"><span class="avatar avatar-lg" style="--ha:210;--hb:260">A</span></span>
         <div>
           <strong class="me-name">Alex, 26</strong>
           <p class="mono me-meta">Berlin &middot; Creator seit 2024</p>
@@ -274,18 +292,20 @@
       </button>
     </nav>
   </div>
+  </div>
 </div>
 
 <!-- ══════════════ MATCH MODAL ══════════════ -->
 <div class="modal" id="match-modal" hidden role="dialog" aria-modal="true" aria-labelledby="match-title">
+  <div class="match-hearts" id="match-hearts" aria-hidden="true"></div>
   <div class="modal-card">
     <p class="eyebrow eyebrow-center"><span class="rec-dot rec-dot-live" aria-hidden="true"></span>Beide Kameras aus</p>
     <div class="match-avatars" aria-hidden="true">
-      <span class="avatar avatar-lg" style="--ha:210;--hb:260">A</span>
+      <span class="avatar-ring"><span class="avatar avatar-lg" style="--ha:210;--hb:260">A</span></span>
       <span class="match-heart">
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S5 16.4 2.7 12C1 8.5 3 5 6.5 5 8.5 5 10 6 12 8c2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>
       </span>
-      <span class="avatar avatar-lg" id="match-avatar"></span>
+      <span class="avatar-ring"><span class="avatar avatar-lg" id="match-avatar"></span></span>
     </div>
     <h2 id="match-title">Match!</h2>
     <p id="match-text">Ihr wollt beide mehr als Feeds.</p>

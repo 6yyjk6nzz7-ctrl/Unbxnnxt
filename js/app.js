@@ -138,13 +138,21 @@
 
   function cardHTML(c) {
     return `
-      <span class="card-initials">${c.name[0]}</span>
-      <span class="card-emoji" aria-hidden="true">${c.emoji}</span>
+      <div class="card-art" aria-hidden="true">
+        <span class="blob blob-a"></span>
+        <span class="blob blob-b"></span>
+        <span class="card-initials">${c.name[0]}</span>
+        <span class="card-ring"><span class="card-emoji">${c.emoji}</span></span>
+      </div>
+      <div class="card-top" aria-hidden="true">
+        ${c.likesYou ? '<span class="pill"><span class="rec-dot rec-dot-live"></span>Online</span>' : "<span></span>"}
+        <span class="pill">${c.km} km</span>
+      </div>
       <span class="stamp stamp-like">LIKE</span>
       <span class="stamp stamp-nope">NOPE</span>
       <div class="card-info">
         <div class="card-name">${c.name}, ${c.age} <span class="verified" title="Verifizierter Creator">${checkSVG}</span></div>
-        <div class="card-meta mono">${c.city.toUpperCase()} · ${c.km} KM · ${c.followers.toUpperCase()} FOLLOWER</div>
+        <div class="card-meta mono">${c.city.toUpperCase()} · ${c.followers.toUpperCase()} FOLLOWER</div>
         <p class="card-bio">${c.bio}</p>
         <div class="card-tags">
           <span class="tag tag-goal">${c.goalLabel}</span>
@@ -178,7 +186,10 @@
       card.innerHTML = cardHTML(c);
       const pos = STACK[i];
       if (i > 0) card.style.transform = `translateY(${pos.y}px) scale(${pos.s})`;
-      else card.classList.add("is-top");
+      else {
+        card.classList.add("is-top", "deal-in");
+        card.addEventListener("animationend", () => card.classList.remove("deal-in"), { once: true });
+      }
       deckEl.appendChild(card);
     }
     attachDrag(deckEl.lastElementChild);
@@ -196,6 +207,7 @@
     card.addEventListener("pointerdown", (e) => {
       if (card.classList.contains("fly-out")) return;
       start = { x: e.clientX, y: e.clientY };
+      card.classList.remove("deal-in");
       card.classList.add("is-dragging");
       card.setPointerCapture(e.pointerId);
     });
@@ -303,18 +315,40 @@
     return m;
   }
 
+  const heartsBox = $("#match-hearts");
+
+  function spawnHearts() {
+    heartsBox.innerHTML = "";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const colors = ["#ff5747", "#ffb86b", "#ff8f7a", "#f0c37e"];
+    for (let i = 0; i < 18; i++) {
+      const h = document.createElement("span");
+      h.className = "mh";
+      h.textContent = "♥";
+      h.style.setProperty("--x", 4 + Math.random() * 92 + "%");
+      h.style.setProperty("--s", 13 + Math.random() * 15 + "px");
+      h.style.setProperty("--d", 2.6 + Math.random() * 1.8 + "s");
+      h.style.setProperty("--dl", Math.random() * 1.4 + "s");
+      h.style.setProperty("--r", Math.random() * 60 - 30 + "deg");
+      h.style.setProperty("--c", colors[i % colors.length]);
+      heartsBox.appendChild(h);
+    }
+  }
+
   function openMatch(creator) {
     state.pendingMatch = createMatch(creator);
     $("#match-avatar").style.setProperty("--ha", creator.ha);
     $("#match-avatar").style.setProperty("--hb", creator.hb);
     $("#match-avatar").textContent = creator.name[0];
     $("#match-text").textContent = `Du und ${creator.name} — ihr wollt beide mehr als Feeds.`;
+    spawnHearts();
     matchModal.hidden = false;
     $("#match-msg").focus();
   }
 
   function closeMatch() {
     matchModal.hidden = true;
+    heartsBox.innerHTML = "";
     state.pendingMatch = null;
   }
 
@@ -323,6 +357,7 @@
   $("#match-msg").addEventListener("click", () => {
     const m = state.pendingMatch;
     matchModal.hidden = true;
+    heartsBox.innerHTML = "";
     state.pendingMatch = null;
     showView("chats");
     if (m) openConvo(m);
@@ -333,7 +368,7 @@
     const badge = $("#tab-badge");
     badge.hidden = n === 0;
     badge.textContent = n;
-    $("#stat-matches").textContent = state.matches.length;
+    $("#stat-matches").textContent = state.matches.filter((m) => m.creator.id !== "team").length;
   }
 
   /* ── Chats ───────────────────────────────────────────────── */
@@ -370,6 +405,8 @@
     updateCounters();
   }
 
+  const phoneEl = $(".phone");
+
   function openConvo(m) {
     state.activeChat = m;
     m.unread = false;
@@ -381,12 +418,14 @@
     $("#convo-name").textContent = c.name;
     renderBubbles();
     $("#convo").hidden = false;
+    phoneEl.classList.add("convo-open");
     updateCounters();
     $("#composer-input").focus();
   }
 
   function closeConvo() {
     $("#convo").hidden = true;
+    phoneEl.classList.remove("convo-open");
     state.activeChat = null;
     renderChatList();
   }
@@ -420,8 +459,8 @@
   function scheduleReply(m) {
     const wrap = $("#bubbles");
     const typing = document.createElement("div");
-    typing.className = "bubble bubble-typing";
-    typing.textContent = "•••";
+    typing.className = "bubble-typing";
+    typing.innerHTML = "<span></span><span></span><span></span>";
 
     setTimeout(() => {
       if (state.activeChat !== m) return;
@@ -450,6 +489,26 @@
       sw.setAttribute("aria-checked", on ? "false" : "true");
     })
   );
+
+  /* ── Scroll-Reveal (Landing) ─────────────────────────────── */
+
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add("is-visible");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    $$("[data-reveal]").forEach((el) => {
+      const sibs = $$(":scope > [data-reveal]", el.parentElement);
+      el.style.setProperty("--rd", sibs.indexOf(el) * 90 + "ms");
+      el.classList.add("reveal-ready");
+      io.observe(el);
+    });
+  }
 
   /* ── Start ───────────────────────────────────────────────── */
 
