@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OffCam — Dating &amp; Collabs für Creator</title>
+<meta name="description" content="OffCam ist die Members-only-Plattform, auf der verifizierte Creator daten und collaben. Off camera, auf Augenhöhe. 18+">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════ AGE GATE ══════════════ -->
+<div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-inner">
+    <div class="sign sign-small" aria-hidden="true">
+      <span class="sign-top">Members only</span>
+      <span class="sign-word">OFF CAM</span>
+      <span class="sign-bottom">Est. 2026 &middot; 18+</span>
+    </div>
+    <h1 id="gate-title">Die Tür ist auf — ab 18.</h1>
+    <p>OffCam ist eine Plattform für erwachsene Creator. Bestätige kurz dein Alter, dann bist du drin.</p>
+    <div class="gate-actions">
+      <button class="btn btn-primary" id="gate-yes">Ich bin 18 oder älter</button>
+      <button class="btn btn-ghost" id="gate-no">Noch nicht 18</button>
+    </div>
+    <p class="gate-fine">Mit dem Klick bestätigst du, volljährig zu sein. Demo-Prototyp — es werden keine Daten gespeichert außer dieser Bestätigung (lokal).</p>
+  </div>
+  <div class="gate-inner" id="gate-denied" hidden>
+    <div class="sign sign-small sign-off" aria-hidden="true">
+      <span class="sign-top">Members only</span>
+      <span class="sign-word">OFF CAM</span>
+      <span class="sign-bottom">Est. 2026 &middot; 18+</span>
+    </div>
+    <h1>Heute leider nicht.</h1>
+    <p>OffCam ist ab 18. Komm wieder, wenn es so weit ist — das Schild bleibt hängen.</p>
+  </div>
+</div>
+
+<!-- ══════════════ LANDING ══════════════ -->
+<div id="landing" hidden>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="OffCam Start">
+      <span class="brand-dot" aria-hidden="true"></span>OffCam
+    </a>
+    <nav class="nav-links" aria-label="Hauptnavigation">
+      <a href="#features">Warum OffCam</a>
+      <a href="#how">So funktioniert's</a>
+    </nav>
+    <button class="btn btn-primary btn-sm" data-open-app>Demo ansehen</button>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="rec-dot" aria-hidden="true"></span>Rec aus &middot; Members only &middot; 18+</p>
+        <h1>10.000 DMs.<br>Null Dates.</h1>
+        <p class="lede">Dein Feed platzt, dein Privatleben nicht. OffCam ist die Members-only-Plattform, auf der verifizierte Creator einander daten und collaben — off camera, auf Augenhöhe.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-open-app>Demo ansehen</button>
+          <button class="btn btn-ghost" data-toast="Warteliste kommt in v1 — das hier ist der Prototyp. 😉">Als Creator bewerben</button>
+        </div>
+        <p class="trust mono">Nur verifizierte Creator &middot; Alias-first &middot; Keine Fans im Feed</p>
+      </div>
+      <div class="hero-sign" aria-hidden="true">
+        <div class="sign">
+          <span class="sign-top">Members only</span>
+          <span class="sign-word">OFF CAM</span>
+          <span class="sign-bottom">Est. 2026 &middot; 18+</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats strip -->
+    <section class="strip" aria-label="Beta-Zahlen">
+      <span class="mono">1.204 Creator auf der Warteliste</span>
+      <span class="strip-sep" aria-hidden="true"></span>
+      <span class="mono">87 Collabs in der Closed Beta</span>
+      <span class="strip-sep" aria-hidden="true"></span>
+      <span class="mono">100&thinsp;% Profile verifiziert</span>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <p class="eyebrow"><span class="rec-dot" aria-hidden="true"></span>Warum OffCam</p>
+      <h2>Backstage, nicht Bühne.</h2>
+      <p class="section-lede">Normale Dating-Apps sind für Creator kaputt: Man wird erkannt, gescreenshottet oder von Fans gematcht, die ein Abo mit einer Beziehung verwechseln. OffCam dreht das um.</p>
+      <div class="feature-grid">
+        <article class="feature">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l7 3v6c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V5l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3>Verifiziert oder gar nicht</h3>
+          <p>Zugang nur mit bestätigtem Creator-Profil — OnlyFans, Fansly &amp; Co. werden beim Onboarding verknüpft. Keine Fakes, keine Katzenbilder-Accounts.</p>
+        </article>
+        <article class="feature">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8c2-3 6-4 9-4s7 1 9 4c-2 3-6 4-9 4s-7-1-9-4z" transform="translate(0 4)"/><path d="M4 5l16 14"/></svg>
+          <h3>Alias-first</h3>
+          <p>Dein Profil sehen nur andere verifizierte Member. Künstlername statt Klarname, unscharfe Vorschau bis zum Match — du entscheidest, wann die Maske fällt.</p>
+        </article>
+        <article class="feature">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+          <h3>Collab-Modus</h3>
+          <p>Collabs sind der schnellste Wachstumshebel im Creator-Game. Filtere nach Nische, Plattform und Reichweite — und match für Content statt für Candlelight.</p>
+        </article>
+        <article class="feature">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S5 16.4 2.7 12C1 8.5 3 5 6.5 5 8.5 5 10 6 12 8c2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>
+          <h3>Matching, das passt</h3>
+          <p>Dates, Collabs oder beides — du stellst ein, wofür du sichtbar bist. Wer dich liket, will dich. Nicht deinen Rabattcode.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <p class="eyebrow"><span class="rec-dot" aria-hidden="true"></span>So funktioniert's</p>
+      <h2>In drei Takes drin.</h2>
+      <div class="takes">
+        <article class="take">
+          <span class="take-label mono">Take 1</span>
+          <h3>Verifizieren</h3>
+          <p>Creator-Account verknüpfen, Alter bestätigen, fertig. Die Prüfung läuft einmalig — danach trägst du den goldenen Haken.</p>
+        </article>
+        <article class="take">
+          <span class="take-label mono">Take 2</span>
+          <h3>Profil bauen</h3>
+          <p>Alias, Nische, Ziele: Dates, Collabs oder beides. Du zeigst nur, was du zeigen willst — der Rest bleibt off cam.</p>
+        </article>
+        <article class="take">
+          <span class="take-label mono">Take 3</span>
+          <h3>Matchen</h3>
+          <p>Swipen, matchen, schreiben. Und wenn's passt: Kamera aus, Handy weg, echtes Leben an.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA band -->
+    <section class="cta-band">
+      <h2>Dein Feed hat genug Fans.<br>Jetzt fehlt noch jemand fürs Off.</h2>
+      <button class="btn btn-primary" data-open-app>Demo ansehen</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-row">
+      <span class="brand"><span class="brand-dot" aria-hidden="true"></span>OffCam</span>
+      <nav class="footer-links" aria-label="Rechtliches">
+        <a href="#" data-toast="Platzhalter — Impressum kommt mit dem echten Launch.">Impressum</a>
+        <a href="#" data-toast="Platzhalter — Datenschutzerklärung kommt mit dem echten Launch.">Datenschutz</a>
+        <a href="#" data-toast="Platzhalter — AGB kommen mit dem echten Launch.">AGB</a>
+      </nav>
+    </div>
+    <p class="footer-fine">Nur für Erwachsene (18+). Demo-Prototyp mit fiktiven Profilen und Mock-Daten. OffCam steht in keiner Verbindung zu OnlyFans (Marke von Fenix International Ltd.) oder Fansly.</p>
+  </footer>
+</div>
+
+<!-- ══════════════ APP DEMO ══════════════ -->
+<div id="app" hidden>
+  <div class="phone">
+    <header class="appbar">
+      <span class="brand brand-app"><span class="brand-dot" aria-hidden="true"></span>OffCam <span class="chip mono">Demo</span></span>
+      <button class="iconbtn" id="app-exit" aria-label="Demo verlassen, zurück zur Startseite">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <!-- Discover -->
+    <section class="view" id="view-discover" aria-label="Entdecken">
+      <div class="chips" role="tablist" aria-label="Filter">
+        <button class="chip-filter is-active" data-filter="alle" role="tab" aria-selected="true">Alle</button>
+        <button class="chip-filter" data-filter="dates" role="tab" aria-selected="false">Dates</button>
+        <button class="chip-filter" data-filter="collabs" role="tab" aria-selected="false">Collabs</button>
+      </div>
+      <div class="deck" id="deck" aria-live="polite"></div>
+      <div class="deck-empty" id="deck-empty" hidden>
+        <div class="sign sign-small sign-off" aria-hidden="true">
+          <span class="sign-top">Members only</span>
+          <span class="sign-word">OFF CAM</span>
+          <span class="sign-bottom">Bis morgen</span>
+        </div>
+        <h3>Das war's für heute.</h3>
+        <p>Neue verifizierte Creator kommen laufend dazu. Oder misch das Deck einfach neu.</p>
+        <button class="btn btn-ghost btn-sm" id="deck-reset">Deck neu mischen</button>
+      </div>
+      <div class="actions" id="deck-actions">
+        <button class="fab fab-nope" id="act-nope" aria-label="Weiter">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <button class="fab fab-collab" id="act-collab" aria-label="Collab anfragen">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+        </button>
+        <button class="fab fab-like" id="act-like" aria-label="Like">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S5 16.4 2.7 12C1 8.5 3 5 6.5 5 8.5 5 10 6 12 8c2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Chats -->
+    <section class="view" id="view-chats" hidden aria-label="Chats">
+      <div id="chat-list-wrap">
+        <h2 class="view-title">Chats</h2>
+        <ul class="chat-list" id="chat-list"></ul>
+        <p class="chat-hint mono" id="chat-hint">Matches landen hier. Swipe im Entdecken-Tab, um welche zu sammeln.</p>
+      </div>
+      <div class="convo" id="convo" hidden>
+        <header class="convo-head">
+          <button class="iconbtn" id="convo-back" aria-label="Zurück zur Chatliste">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <span class="avatar avatar-sm" id="convo-avatar" aria-hidden="true"></span>
+          <div class="convo-title">
+            <strong id="convo-name"></strong>
+            <span class="mono convo-status"><span class="rec-dot rec-dot-live" aria-hidden="true"></span>online</span>
+          </div>
+        </header>
+        <div class="bubbles" id="bubbles"></div>
+        <form class="composer" id="composer">
+          <input type="text" id="composer-input" placeholder="Schreib was…" autocomplete="off" aria-label="Nachricht">
+          <button class="fab fab-like fab-sm" type="submit" aria-label="Senden">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l18-8-6 18-3.5-7L3 12z"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section class="view" id="view-profile" hidden aria-label="Profil">
+      <h2 class="view-title">Dein Profil</h2>
+      <div class="me-card">
+        <span class="avatar avatar-lg" style="--ha:210;--hb:260" aria-hidden="true">A</span>
+        <div>
+          <strong class="me-name">Alex, 26</strong>
+          <p class="mono me-meta">Berlin &middot; Creator seit 2024</p>
+        </div>
+        <span class="chip mono">Demo-Profil</span>
+      </div>
+      <div class="panel panel-verify">
+        <div>
+          <strong>Verifizierung ausstehend</strong>
+          <p>Verknüpfe deinen Creator-Account, um den goldenen Haken zu bekommen und sichtbar zu werden.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" data-toast="Kommt in v1: OAuth-Verknüpfung mit deiner Creator-Plattform.">Account verknüpfen</button>
+      </div>
+      <div class="panel">
+        <h3 class="panel-title mono">Sichtbarkeit</h3>
+        <div class="setting"><span>Sichtbar für Dates</span><button class="switch" role="switch" aria-checked="true" aria-label="Sichtbar für Dates"></button></div>
+        <div class="setting"><span>Sichtbar für Collabs</span><button class="switch" role="switch" aria-checked="true" aria-label="Sichtbar für Collabs"></button></div>
+        <div class="setting"><span>Alias-Modus</span><button class="switch" role="switch" aria-checked="true" aria-label="Alias-Modus"></button></div>
+      </div>
+      <div class="panel">
+        <h3 class="panel-title mono">Diese Woche</h3>
+        <div class="stats-row">
+          <div class="stat"><span class="stat-num mono">1,2k</span><span class="stat-label">Profilaufrufe</span></div>
+          <div class="stat"><span class="stat-num mono">340</span><span class="stat-label">Likes</span></div>
+          <div class="stat"><span class="stat-num mono" id="stat-matches">0</span><span class="stat-label">Matches</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab bar -->
+    <nav class="tabs" aria-label="App-Navigation">
+      <button class="tab is-active" data-view="discover" aria-current="page">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c-4 0-7-2.7-7-7 0-3 2-5.5 3.5-7C9 6.5 10 4.5 9.5 2c3.5 1.5 5 4 5.5 6 .3 1.2.2 2.4 1 3.4.7-.6 1-1.7 1-2.9 1.6 1.6 3 3.8 3 6.5 0 4.3-3 7-7.5 7z"/></svg>
+        <span class="mono">Entdecken</span>
+      </button>
+      <button class="tab" data-view="chats">
+        <span class="tab-badge-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12c0 4-4 7-9 7-1.2 0-2.3-.2-3.3-.5L3 20l1.6-3.8C3.6 15 3 13.6 3 12c0-4 4-7 9-7s9 3 9 7z"/></svg>
+          <span class="badge mono" id="tab-badge" hidden>0</span>
+        </span>
+        <span class="mono">Chats</span>
+      </button>
+      <button class="tab" data-view="profile">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+        <span class="mono">Profil</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- ══════════════ MATCH MODAL ══════════════ -->
+<div class="modal" id="match-modal" hidden role="dialog" aria-modal="true" aria-labelledby="match-title">
+  <div class="modal-card">
+    <p class="eyebrow eyebrow-center"><span class="rec-dot rec-dot-live" aria-hidden="true"></span>Beide Kameras aus</p>
+    <div class="match-avatars" aria-hidden="true">
+      <span class="avatar avatar-lg" style="--ha:210;--hb:260">A</span>
+      <span class="match-heart">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21S5 16.4 2.7 12C1 8.5 3 5 6.5 5 8.5 5 10 6 12 8c2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>
+      </span>
+      <span class="avatar avatar-lg" id="match-avatar"></span>
+    </div>
+    <h2 id="match-title">Match!</h2>
+    <p id="match-text">Ihr wollt beide mehr als Feeds.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="match-msg">Nachricht schreiben</button>
+      <button class="btn btn-ghost" id="match-continue">Weiter swipen</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast mono" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
