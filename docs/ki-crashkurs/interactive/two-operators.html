@@ -1,0 +1,630 @@
+<title>Two Operators</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#08090B; --surf:#0E1013; --surf-2:#14171B;
+  --line:#1B1F25; --line-2:#272C34;
+  --fg:#F7F8FA; --fg-2:#8D949F; --fg-3:#5A616C;
+  --volt:#5D7FFF; --volt-dim:#2E3B6B;
+  --pos:#3ECF8E; --warn:#FF6B57;
+  --r:3px;
+  --pad:clamp(20px,5vw,64px);
+  --rail:172px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  font-variation-settings:"wdth" 100;
+  font-size:16px;line-height:1.62;font-weight:400;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  font-feature-settings:"ss01","cv01";
+}
+::selection{background:var(--volt);color:#fff}
+:focus-visible{outline:1.5px solid var(--volt);outline-offset:3px;border-radius:2px}
+
+/* ── progress + rail ────────────────────────────── */
+#prog{position:fixed;top:0;left:0;height:1.5px;background:var(--volt);width:0;z-index:60;transition:width .1s linear}
+.rail{
+  position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:50;
+  display:flex;flex-direction:column;gap:2px;
+}
+@media(max-width:1400px){.rail{display:none}}
+.rail a{
+  display:flex;align-items:center;gap:10px;text-decoration:none;padding:5px 0;
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--fg-3);transition:color .2s;
+}
+.rail a::before{content:"";width:14px;height:1px;background:var(--line-2);transition:width .25s,background .25s}
+.rail a:hover{color:var(--fg-2)}
+.rail a.on{color:var(--fg)}
+.rail a.on::before{width:26px;background:var(--volt)}
+
+/* ── scaffold ───────────────────────────────────── */
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+section{padding:clamp(64px,9vw,132px) 0;position:relative}
+.hr{height:1px;background:var(--line);border:0;margin:0}
+.narrow{max-width:640px}
+
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.032em;line-height:1.03;text-wrap:balance;font-variation-settings:"wdth" 112}
+h2{font-size:clamp(32px,5vw,60px)}
+h3{font-size:clamp(21px,2.5vw,30px);letter-spacing:-.022em}
+p{margin:0 0 1.1em}p:last-child{margin-bottom:0}
+a{color:var(--volt)}
+
+.lbl{
+  font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--fg-3);display:flex;align-items:center;gap:10px;margin-bottom:22px;
+}
+.lbl span{color:var(--volt)}
+.lede{font-size:clamp(17px,1.9vw,20px);line-height:1.55;color:var(--fg-2)}
+.sm{font-size:14px;line-height:1.6;color:var(--fg-2)}
+.xs{font-size:12px;line-height:1.55;color:var(--fg-3);font-family:"JetBrains Mono",monospace;letter-spacing:.01em}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+b,strong{font-weight:600;color:var(--fg)}
+.acc{color:var(--volt)}
+
+.rv{opacity:0;transform:translateY(10px);transition:opacity .42s ease,transform .42s cubic-bezier(.22,1,.36,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+/* ── hero ───────────────────────────────────────── */
+.hero{padding-top:clamp(88px,13vw,168px);padding-bottom:clamp(56px,7vw,96px)}
+.hero .top{display:flex;gap:14px;align-items:center;margin-bottom:clamp(36px,6vw,60px);flex-wrap:wrap}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:99px;
+  padding:5px 12px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--fg-2);flex:none;white-space:nowrap;
+}
+.chip i{width:5px;height:5px;border-radius:50%;background:var(--pos);flex:none}
+.chip-alt i{background:var(--volt)}
+.fig{
+  display:block;font-size:clamp(56px,13vw,182px);font-weight:800;line-height:.9;
+  letter-spacing:-.055em;font-variation-settings:"wdth" 118;font-variant-numeric:tabular-nums;
+}
+.hero h1{font-size:clamp(26px,3.9vw,50px);max-width:22ch;margin-top:clamp(26px,4vw,44px)}
+.hero .lede{max-width:52ch;margin-top:22px}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border-top:1px solid var(--line);margin-top:clamp(40px,6vw,64px)}
+.kpi{padding:22px 20px 0 0;border-right:1px solid var(--line)}
+.kpi:last-child{border-right:0}
+@media(max-width:640px){.kpi{border-right:0;padding-right:0}}
+.kpi .v{display:block;font-family:"JetBrains Mono",monospace;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.kpi .k{display:block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);margin-top:8px}
+
+/* ── editable ───────────────────────────────────── */
+[data-edit]{outline:none;border-radius:2px;transition:background .18s,box-shadow .18s}
+[data-edit]:hover{background:rgba(93,127,255,.07);box-shadow:0 0 0 4px rgba(93,127,255,.07)}
+[data-edit]:focus{background:rgba(93,127,255,.11);box-shadow:0 0 0 4px rgba(93,127,255,.11)}
+.tip{display:inline-flex;align-items:flex-start;gap:9px;margin-top:26px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--fg-3);line-height:1.7}
+.tip::before{content:"";width:16px;height:1px;background:var(--volt);flex:none;margin-top:8px}
+
+/* ── generic grid ───────────────────────────────── */
+.two{display:grid;gap:clamp(30px,5vw,80px);grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);align-items:start}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.mods{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mod{background:var(--bg);padding:clamp(20px,2.6vw,28px);transition:background .22s}
+.mod:hover{background:var(--surf)}
+.mod .i{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;color:var(--volt);display:block;margin-bottom:14px}
+.mod h4{margin:0 0 9px;font-size:16px;font-weight:600;letter-spacing:-.012em}
+.mod p{margin:0;font-size:13.8px;line-height:1.58;color:var(--fg-2)}
+
+/* ── machines ───────────────────────────────────── */
+.rig{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+@media(max-width:760px){.rig{grid-template-columns:1fr}}
+.rig>div{background:var(--bg);padding:clamp(22px,3vw,32px);position:relative}
+.rig .tagl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-3);display:block;margin-bottom:16px}
+.rig .name{font-size:clamp(22px,3vw,31px);font-weight:700;letter-spacing:-.028em;font-variation-settings:"wdth" 110;margin-bottom:6px}
+.rig .spec{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--fg-2);margin-bottom:20px}
+.rig ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.rig li{font-size:13.5px;line-height:1.5;color:var(--fg-2);display:flex;gap:10px}
+.rig li::before{content:"";width:5px;height:1px;background:var(--line-2);flex:none;margin-top:10px}
+.rig .hers{background:var(--surf)}
+.rig .hers .tagl{color:var(--volt)}
+
+/* ── ventures ───────────────────────────────────── */
+.vs{border-top:1px solid var(--line)}
+.vrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:clamp(14px,2.5vw,32px);align-items:baseline;
+   padding:clamp(22px,3vw,34px) 0;border-bottom:1px solid var(--line);transition:background .22s}
+.vrow:hover{background:var(--surf)}
+.vrow .i{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--fg-3)}
+.vrow h4{margin:0 0 8px;font-size:clamp(20px,2.6vw,30px);font-weight:700;letter-spacing:-.026em;font-variation-settings:"wdth" 108}
+.vrow p{margin:0;font-size:14px;color:var(--fg-2);max-width:72ch;line-height:1.58}
+.vrow .own{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);white-space:nowrap;border:1px solid var(--line-2);border-radius:2px;padding:5px 9px}
+.vrow .own.m{color:var(--volt);border-color:var(--volt-dim)}
+@media(max-width:700px){.vrow{grid-template-columns:32px minmax(0,1fr);row-gap:12px}.vrow .own{grid-column:2}}
+
+/* ── ramp ───────────────────────────────────────── */
+.ramp{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(218px,1fr))}
+.ph{background:var(--bg);padding:clamp(20px,2.6vw,28px)}
+.ph.now{background:var(--surf)}
+.ph .w{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);display:block;margin-bottom:14px}
+.ph.now .w{color:var(--volt)}
+.ph h4{margin:0 0 13px;font-size:17px;font-weight:600;letter-spacing:-.016em}
+.ph ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.ph li{font-size:13.3px;line-height:1.5;color:var(--fg-2);display:flex;gap:10px}
+.ph li::before{content:"";width:5px;height:1px;background:var(--line-2);flex:none;margin-top:9px}
+
+/* ── model ──────────────────────────────────────── */
+.panel{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg)}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:15px clamp(18px,2.4vw,26px);border-bottom:1px solid var(--line);background:var(--surf)}
+.phead span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+.pbody{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:0}
+@media(max-width:880px){.pbody{grid-template-columns:1fr}}
+.inputs{padding:clamp(22px,3vw,32px);border-right:1px solid var(--line)}
+@media(max-width:880px){.inputs{border-right:0;border-bottom:1px solid var(--line)}}
+.out{padding:clamp(22px,3vw,32px)}
+.ct{margin-bottom:24px}
+.ct:last-child{margin-bottom:0}
+.ct label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;color:var(--fg-2);margin-bottom:11px}
+.ct label i{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--fg);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;background:var(--line-2);outline-offset:8px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--fg);cursor:pointer;transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.22)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--fg);cursor:pointer}
+select{width:100%;font-family:Archivo,sans-serif;font-size:13.5px;color:var(--fg);background:var(--surf);
+  border:1px solid var(--line-2);border-radius:2px;padding:10px 12px}
+.row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--line)}
+.row:first-child{padding-top:0}
+.row:last-child{border-bottom:0}
+.row .l{font-size:13px;color:var(--fg-2)}
+.row .r{font-family:"JetBrains Mono",monospace;font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+.row.big .r{font-size:clamp(28px,4vw,44px);font-weight:600;letter-spacing:-.03em;font-family:Archivo,sans-serif;font-variation-settings:"wdth" 112}
+.row .n{grid-column:1/-1;font-size:11.5px;line-height:1.5;color:var(--fg-3);margin-top:5px;font-family:"JetBrains Mono",monospace}
+.vd{margin-top:22px;padding:15px 17px;background:var(--surf);border-radius:2px;font-size:13.5px;line-height:1.6;color:var(--fg-2)}
+.vd b{color:var(--fg);font-weight:600}
+
+/* ── floor ──────────────────────────────────────── */
+.floor{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.floor>div{background:var(--bg);padding:24px}
+.floor .v2{font-family:"JetBrains Mono",monospace;font-size:23px;color:var(--warn);display:block;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.floor .k2{font-size:12.8px;line-height:1.52;color:var(--fg-2)}
+
+/* ── statement ──────────────────────────────────── */
+.say{padding:clamp(72px,11vw,150px) 0}
+.say p{font-size:clamp(26px,4.6vw,58px);font-weight:700;letter-spacing:-.034em;line-height:1.08;max-width:20ch;font-variation-settings:"wdth" 110;margin:0}
+.say .by{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-3);margin-top:28px}
+
+/* ── letter ─────────────────────────────────────── */
+.note{border:1px solid var(--line);border-radius:var(--r);background:var(--surf);padding:clamp(26px,4vw,48px)}
+.note .b{font-size:clamp(17px,2vw,21px);line-height:1.62;color:var(--fg);letter-spacing:-.012em}
+.note .b p{margin-bottom:.9em}
+.note .s{margin-top:26px;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt)}
+
+footer{padding:clamp(48px,7vw,80px) 0 52px;border-top:1px solid var(--line)}
+.fr{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.fr .m{font-size:15px;font-weight:700;letter-spacing:-.02em;font-variation-settings:"wdth" 112}
+</style>
+
+<div id="prog"></div>
+<nav class="rail" aria-label="Sections">
+  <a href="#top" data-t="top">00 Result</a>
+  <a href="#how" data-t="how">01 Method</a>
+  <a href="#rigs" data-t="rigs">02 Machines</a>
+  <a href="#queue" data-t="queue">03 Queue</a>
+  <a href="#ramp" data-t="ramp">04 Ramp</a>
+  <a href="#model" data-t="model">05 Model</a>
+  <a href="#floor" data-t="floor">06 Floor</a>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="top rv">
+      <span class="chip"><i></i>Year one closed</span>
+      <span class="chip chip-alt"><span data-edit="h.date">August 2026</span></span>
+    </div>
+    <span class="fig rv" data-count="1000000" data-prefix="$">$0</span>
+    <h1 class="rv">One person, fifty-hour weeks, <span class="acc">one workflow.</span> Year two I'd rather not do alone.</h1>
+    <p class="lede rv">Marion — this is the case for you joining as a partner, not a hire.
+      What the year actually took, the machines we'd run it on, what I want to build next,
+      and how far off the average my result sits.</p>
+    <div class="kpis rv">
+      <div class="kpi"><span class="v" data-edit="k.rev">$1M</span><span class="k">Revenue</span></div>
+      <div class="kpi"><span class="v" data-edit="k.hrs">50+ h / wk</span><span class="k">What it cost</span></div>
+      <div class="kpi"><span class="v" data-edit="k.team">1</span><span class="k">Operators</span></div>
+      <div class="kpi"><span class="v" data-edit="k.next">3</span><span class="k">Queued</span></div>
+    </div>
+    <div class="tip rv">Click any value to edit it — saves automatically</div>
+  </div>
+</header>
+
+<hr class="hr">
+
+<!-- ═══════ METHOD ═══════ -->
+<section id="how">
+  <div class="wrap two">
+    <div class="rv">
+      <div class="lbl"><span>01</span> Method</div>
+      <h2>One workflow, run every day.</h2>
+    </div>
+    <div class="rv">
+      <p class="lede" data-edit="how.1">I built the whole operation as a single AI workflow and then
+        ran it, every day, for a year. No team, no funding, nobody's permission. The leverage wasn't
+        that AI wrote things for me — it was that one person could hold an entire business in their
+        head and still ship.</p>
+      <p class="lede" style="margin-top:20px" data-edit="how.2">It cost fifty-plus hours a week to do
+        that alone. That's the number I'd most like to change, and it's the one thing a second
+        operator actually fixes.</p>
+      <div class="mods" style="margin-top:38px">
+        <div class="mod"><span class="i">01</span><h4>Leverage over labour</h4>
+          <p>The limit stopped being hours and became judgement — knowing which output was good
+            enough to ship and which would cost me later.</p></div>
+        <div class="mod"><span class="i">02</span><h4>It compounds</h4>
+          <p>Every workflow built once carries into the next company. Number two starts around
+            month eight, not month zero.</p></div>
+        <div class="mod"><span class="i">03</span><h4>The models keep moving</h4>
+          <p>What took a week in January takes an afternoon now. Anything built on that curve gets
+            cheaper to run the longer you run it.</p></div>
+        <div class="mod"><span class="i">04</span><h4>The gap</h4>
+          <p>What I don't have is a second person with taste and an outside eye. That has been the
+            real bottleneck for months, not compute.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ MACHINES ═══════ -->
+<section id="rigs">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(30px,4vw,50px)">
+      <div class="lbl"><span>02</span> Machines</div>
+      <h2>Two desks, both maxed.</h2>
+      <p class="lede" style="margin-top:20px">Unglamorous but it matters: local compute is what
+        lets you run things without asking anyone. You wouldn't be starting on a borrowed laptop.</p>
+    </div>
+    <div class="rig rv">
+      <div>
+        <span class="tagl">Incoming · mine</span>
+        <div class="name" data-edit="rig1.n">Mac Studio M5 Ultra</div>
+        <div class="spec mono" data-edit="rig1.s">Maxed configuration</div>
+        <ul>
+          <li>Runs the heavy workflows without queueing</li>
+          <li>Big local models stay resident instead of reloading</li>
+          <li>Headroom for whatever the next twelve months needs</li>
+        </ul>
+      </div>
+      <div class="hers">
+        <span class="tagl">Yours · from day one</span>
+        <div class="name" data-edit="rig2.n">MacBook Pro M4 Max</div>
+        <div class="spec mono" data-edit="rig2.s">36 GB unified memory</div>
+        <ul>
+          <li>Already here, already set up, already fast</li>
+          <li>Comfortably runs everything in your first four weeks</li>
+          <li>Not a hand-me-down — it's the machine the year was built on</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ STATEMENT ═══════ -->
+<div class="say">
+  <div class="wrap">
+    <p class="rv">I checked whether my result was <span class="acc">normal</span> before I let myself believe it. It isn't — which is exactly why I'm not asking you to gamble.</p>
+    <div class="by rv">On the next twelve months</div>
+  </div>
+</div>
+
+<hr class="hr">
+
+<!-- ═══════ QUEUE ═══════ -->
+<section id="queue">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(30px,4vw,48px)">
+      <div class="lbl"><span>03</span> Queue</div>
+      <h2>What we make next.</h2>
+      <p class="lede" style="margin-top:20px">Three things. The split below is the division of
+        labour I'd propose, not a decision — argue with it.</p>
+    </div>
+    <div class="vs rv">
+      <div class="vrow">
+        <span class="i">01</span>
+        <div>
+          <h4 data-edit="v1.n">OffCam</h4>
+          <p data-edit="v1.d">A members-only, 18+ network where verified creators meet each other
+            rather than their audience — dating and collaboration, off camera. The prototype works.
+            The hard part isn't the code: it's age verification that actually holds up, a payment
+            processor that won't drop us at month six, and deciding what the platform refuses to
+            do before the code decides for us.</p>
+          <p class="xs" style="margin-top:12px">That compliance surface is the single biggest
+            non-technical workstream in the queue — and the one that decides whether this ships at all.</p>
+        </div>
+        <span class="own m" data-edit="v1.o">Marion leads</span>
+      </div>
+      <div class="vrow">
+        <span class="i">02</span>
+        <div>
+          <h4 data-edit="v2.n">The workflow, productised</h4>
+          <p data-edit="v2.d">The system that produced year one, packaged so other people can run it.
+            Highest margin, lowest novelty — the one that funds everything else.</p>
+        </div>
+        <span class="own" data-edit="v2.o">Konstantin leads</span>
+      </div>
+      <div class="vrow">
+        <span class="i">03</span>
+        <div>
+          <h4 data-edit="v3.n">Open — yours to name</h4>
+          <p data-edit="v3.d">Deliberately blank. The third should come from something you keep
+            noticing that I don't. That isn't a courtesy — it's the only way this ends up genuinely
+            ours rather than mine with help.</p>
+        </div>
+        <span class="own m" data-edit="v3.o">Marion decides</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ RAMP ═══════ -->
+<section id="ramp">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(30px,4vw,48px)">
+      <div class="lbl"><span>04</span> Ramp</div>
+      <h2>Four weeks to partner, not to beginner.</h2>
+      <p class="lede" style="margin-top:20px">You're learning to drive something that already runs.
+        That's a completely different job from building one, and a much faster one.</p>
+    </div>
+    <div class="ramp rv">
+      <div class="ph now"><span class="w">Week 1 · now</span><h4>Fluent</h4>
+        <ul><li>Break it on purpose — make it invent a source, so the confident tone never fools you</li>
+          <li>Five real tasks from your own week, not exercises</li>
+          <li>See what a proper brief changes</li></ul></div>
+      <div class="ph"><span class="w">Week 2</span><h4>Critical</h4>
+        <ul><li>Audit an AI answer in a field you actually know</li>
+          <li>Build your own workspace so you stop repeating yourself</li>
+          <li>Sit through one of my live workflows end to end</li></ul></div>
+      <div class="ph"><span class="w">Week 3</span><h4>Owning a surface</h4>
+        <ul><li>Take OffCam's German copy outright — every button, every error state</li>
+          <li>Decide what the product refuses to do, before the code decides for us</li>
+          <li>Ten conversations with people who'd actually use it</li></ul></div>
+      <div class="ph"><span class="w">Week 4</span><h4>Decide</h4>
+        <ul><li>Name company three</li>
+          <li>Agree the split in writing — properly, not over dinner</li>
+          <li>Or say no, and I take that answer without a follow-up pitch</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ MODEL ═══════ -->
+<section id="model">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(28px,4vw,44px)">
+      <div class="lbl"><span>05</span> Model</div>
+      <h2>What a second operator changes.</h2>
+      <p class="lede" style="margin-top:20px">Move the inputs. It's built to be pessimistic where a
+        pitch deck would be optimistic — including the part where two people aren't twice one.</p>
+    </div>
+    <div class="panel rv">
+      <div class="phead"><span>Two-operator projection</span><span class="mono" id="stamp">12 mo · 2 co</span></div>
+      <div class="pbody">
+        <div class="inputs">
+          <div class="ct"><label for="base">Year-one baseline <i id="basev">$1.0M</i></label>
+            <input type="range" id="base" min="50" max="3000" value="1000" step="50"></div>
+          <div class="ct"><label for="hrs">Her hours a week <i id="hrsv">20 h</i></label>
+            <input type="range" id="hrs" min="4" max="50" value="20" step="1"></div>
+          <div class="ct"><label for="mos">Horizon <i id="mosv">12 months</i></label>
+            <input type="range" id="mos" min="3" max="36" value="12" step="1"></div>
+          <div class="ct"><label for="cos">Companies running</label>
+            <select id="cos">
+              <option value="1">One — go deep on OffCam</option>
+              <option value="2" selected>Two — plus the productised workflow</option>
+              <option value="3">Three — the full queue</option>
+            </select></div>
+          <p class="xs" style="margin-top:20px">Second-operator gain modelled at +55% throughput,
+            not +100%. Coordination costs are real.</p>
+        </div>
+        <div class="out">
+          <div class="row big"><span class="l">Projected combined revenue</span><span class="r" id="r-total">—</span></div>
+          <div class="row"><span class="l">Attributable to the second operator</span><span class="r" style="color:var(--pos)" id="r-delta">—</span></div>
+          <div class="row"><span class="l">My hours a week, with you in it</span><span class="r" id="r-hours">—</span>
+            <span class="n">Down from 50+. This is the number I actually care about.</span></div>
+          <div class="row"><span class="l">Same period as a salaried job instead</span><span class="r" style="color:var(--fg-2)" id="r-job">—</span></div>
+          <div class="row"><span class="l">Chance it lands as modelled</span><span class="r" style="color:var(--warn)" id="r-odds">—</span>
+            <span class="n">Second companies fail more often than first ones succeed.</span></div>
+          <div class="vd" id="vd"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ FLOOR ═══════ -->
+<section id="floor">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(26px,3.6vw,42px)">
+      <div class="lbl"><span>06</span> Floor</div>
+      <h2>How unusual my year was.</h2>
+      <p class="lede" style="margin-top:20px">Better you get this from me than find it yourself and
+        wonder what else I left out. The result is real and it's also the far tail of a steep curve.</p>
+    </div>
+    <div class="floor rv">
+      <div><span class="v2">$72</span><span class="k2">Median monthly earnings across 146,271 digital products, Jan–Apr 2026. Per month, not per year.</span></div>
+      <div><span class="v2">44%</span><span class="k2">Of those earn exactly nothing. The top 1% takes 99.5% of all revenue on the platform.</span></div>
+      <div><span class="v2">38%</span><span class="k2">Of German businesses still trade after five years. Solo founders with no employees: about a third.</span></div>
+      <div><span class="v2">55%</span><span class="k2">Of employers pay no premium for AI skills — they just expect them now. Scarcity prices end.</span></div>
+    </div>
+    <div class="narrow rv" style="margin-top:clamp(30px,4vw,46px)">
+      <p class="lede">Which is the actual argument for doing this <b>together</b> rather than you
+        betting a year alone. You'd be joining something that already covers its own costs.</p>
+      <p class="xs" style="margin-top:18px">Verified against primary sources, Aug 2026 — InsightRaider,
+        IfM Bonn / Destatis, Payscale CBPR. Of 153 researched claims, 11 were false and 43 unverifiable; those were cut.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ LETTER ═══════ -->
+<section>
+  <div class="wrap narrow">
+    <div class="lbl rv"><span>07</span> The actual reason</div>
+    <div class="note rv">
+      <div class="b" contenteditable="true" spellcheck="false" data-edit="letter">
+        <p>Marion — the money is the least interesting part of this, and you'd see straight through
+          me if I pretended otherwise.</p>
+        <p>What actually happened this year is that I found out I can build things. And every single
+          week the same thought: she'd be better at the half of this I'm worst at. Not the code. The
+          part where you look at something and know instantly why it feels wrong.</p>
+        <p>Fifty hours a week is fine for a year. It's not fine for ten. I'd rather build slower with
+          you than faster alone, and I'm fairly sure it wouldn't even be slower.</p>
+        <p>Come do this with me.</p>
+      </div>
+      <div class="s">— Konstantin</div>
+    </div>
+    <div class="tip rv">Click the letter to rewrite it in your own words</div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<div class="say">
+  <div class="wrap">
+    <p class="rv">Year one proved it works. <span class="acc">Year two is the one I want you in.</span></p>
+    <div class="by rv">Week four — you just tell me. No follow-up pitch.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap fr">
+    <span class="m">Two Operators</span>
+    <span class="xs">For Marion · <span data-edit="f.date">28 Aug 2026</span> · Private</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var LS={g:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}},
+          s:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+
+  /* scroll progress */
+  var prog=document.getElementById('prog');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-innerHeight;
+    prog.style.width=(h>0?(scrollY/h)*100:0)+'%';
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  /* rail highlight */
+  var links=[].slice.call(document.querySelectorAll('.rail a'));
+  var secs=links.map(function(a){return document.getElementById(a.dataset.t);}).filter(Boolean);
+  var railIO=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      links.forEach(function(a){ a.classList.toggle('on', a.dataset.t===e.target.id); });
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(function(s){ railIO.observe(s); });
+
+  /* reveal + counter */
+  function count(el,to,pre){
+    var t0=null,dur=1500;
+    function step(ts){
+      if(t0===null)t0=ts;
+      var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
+      el.textContent=pre+Math.round(to*e).toLocaleString('en-US');
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting)return;
+      e.target.classList.add('in'); io.unobserve(e.target);
+      var c=e.target.matches('[data-count]')?e.target:e.target.querySelector('[data-count]');
+      if(c&&!c.dataset.done){
+        c.dataset.done='1';
+        var pre=c.dataset.prefix||'';
+        if(reduce) c.textContent=pre+(+c.dataset.count).toLocaleString('en-US');
+        else count(c,+c.dataset.count,pre);
+      }
+    });
+  },{threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  [].slice.call(document.querySelectorAll('.rv')).forEach(function(el,i){
+    el.style.transitionDelay=(Math.min(i,5)*40)+'ms'; io.observe(el);
+  });
+
+  /* editable */
+  [].slice.call(document.querySelectorAll('[data-edit]')).forEach(function(el){
+    var k='two.'+el.dataset.edit, saved=LS.g(k,null);
+    if(saved!==null) el.innerHTML=saved;
+    el.setAttribute('contenteditable','true'); el.setAttribute('spellcheck','false');
+    var tm;
+    el.addEventListener('input',function(){
+      clearTimeout(tm); tm=setTimeout(function(){ LS.s(k,el.innerHTML); },320);
+    });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'&&el.dataset.edit!=='letter'){ e.preventDefault(); el.blur(); }
+    });
+  });
+
+  /* model */
+  var base=document.getElementById('base'),hrs=document.getElementById('hrs'),
+      mos=document.getElementById('mos'),cos=document.getElementById('cos');
+  function money(n){
+    if(n>=1000000)return '$'+(n/1000000).toFixed(n>=10000000?1:2)+'M';
+    if(n>=1000)return '$'+Math.round(n/1000)+'k';
+    return '$'+Math.round(n);
+  }
+  function run(){
+    var b=+base.value*1000,h=+hrs.value,m=+mos.value,c=+cos.value;
+    document.getElementById('basev').textContent='$'+(b/1000000).toFixed(1)+'M';
+    document.getElementById('hrsv').textContent=h+' h';
+    document.getElementById('mosv').textContent=m+(m===1?' month':' months');
+    document.getElementById('stamp').textContent=m+' mo · '+c+' co';
+
+    var monthly=b/12,
+        lift=0.55*Math.min(1,h/32),
+        spread=c===1?1:(c===2?0.92:0.80),
+        ramp=Math.min(1,Math.max(0,(m-1)/5)),
+        solo=monthly*m*spread,
+        total=solo*(1+lift*ramp),
+        delta=total-solo,
+        job=(58000/12)*m*Math.min(1,h/40),
+        mine=Math.max(30,Math.round(52-18*Math.min(1,h/30)*ramp)),
+        odds=Math.round(Math.max(8,Math.min(62,46-(c-1)*11-Math.max(0,(m-12))*0.7+Math.min(12,h/3))));
+
+    document.getElementById('r-total').textContent=money(total);
+    document.getElementById('r-delta').textContent='+'+money(delta);
+    document.getElementById('r-hours').textContent=mine+' h';
+    document.getElementById('r-job').textContent=money(job);
+    document.getElementById('r-odds').textContent=odds+'%';
+
+    var msg;
+    if(m<6){
+      msg='<b>At '+m+' months a second operator barely shows up.</b> That is how ramps work — '+
+          'the first months go on learning the system, not producing with it. Judge this at twelve.';
+    } else if(delta<job){
+      msg='<b>At '+h+' hours a week a salary would pay you more over '+m+' months.</b> Worth saying '+
+          'out loud. The reason to do it anyway is ownership and company three, not near-term cash.';
+    } else if(c===3){
+      msg='<b>Three at once is where this model is least trustworthy.</b> The math says '+money(total)+
+          '; the failure rate says most third ventures never get there. Two is the version I would sign.';
+    } else {
+      msg='<b>'+money(total)+' over '+m+' months, of which '+money(delta)+' is genuinely yours</b> — '+
+          'and my week drops to about '+mine+' hours. That second number is the one I would trade the '+
+          'first for.';
+    }
+    document.getElementById('vd').innerHTML=msg;
+  }
+  [base,hrs,mos,cos].forEach(function(el){el.addEventListener('input',run);el.addEventListener('change',run);});
+  run();
+})();
+</script>

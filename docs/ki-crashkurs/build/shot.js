@@ -3,7 +3,10 @@
 const { spawn } = require('child_process');
 const fs = require('fs'), path = require('path'), os = require('os');
 const CHROME='/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
-const [,,inFile,outFile,theme='light',width='1280']=process.argv;
+const [,,inFile,outFile,theme='light',width='1280',...rest]=process.argv;
+// --reveal forces scroll-reveal elements visible; a beyond-viewport capture
+// otherwise races their transitions and lands on half-faded sections.
+const FORCE_REVEAL=rest.includes('--reveal');
 const PORT=9800+(process.pid%400), userDir=fs.mkdtempSync(path.join(os.tmpdir(),'shot-'));
 const chrome=spawn(CHROME,['--headless=new','--disable-gpu','--no-sandbox','--disable-dev-shm-usage',
   '--force-color-profile=srgb','--hide-scrollbars',`--user-data-dir=${userDir}`,
@@ -42,8 +45,17 @@ class CDP{constructor(ws){this.ws=ws;this.id=0;this.p=new Map();this.h=new Map()
     for(let y=0;y<H;y+=step){ scrollTo(0,y); await new Promise(r=>setTimeout(r,90)); }
     scrollTo(0,0); await new Promise(r=>setTimeout(r,500));
   })()`,awaitPromise:true},sessionId);
+  if(FORCE_REVEAL){
+    await cdp.send('Runtime.evaluate',{expression:`(()=>{
+      const st=document.createElement('style');
+      st.textContent='.rv,.reveal{opacity:1!important;transform:none!important;transition:none!important}';
+      document.documentElement.appendChild(st);
+    })()`},sessionId);
+    await sleep(250);
+  }
   const {data}=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true},sessionId);
   fs.writeFileSync(outFile,Buffer.from(data,'base64'));
   console.log('OK',outFile,(fs.statSync(outFile).size/1024|0)+'KB');
-  ws.close();chrome.kill('SIGKILL');fs.rmSync(userDir,{recursive:true,force:true});process.exit(0);
+  ws.close();chrome.kill('SIGKILL');
+  try{fs.rmSync(userDir,{recursive:true,force:true});}catch(e){/* chrome may still be flushing */}process.exit(0);
 })().catch(e=>{console.error('FAIL',e.message);try{chrome.kill('SIGKILL');}catch(_){}process.exit(1);});

@@ -114,3 +114,33 @@ scroll-getriggerte Reveals, keine externen Bibliotheken.
 
 `build/shot.js` macht Ganzseiten-Screenshots über CDP — scrollt vorher durch die
 Seite, damit IntersectionObserver-Reveals ausgelöst werden, bevor aufgenommen wird.
+
+---
+
+## Two Operators (aktuelle Fassung)
+
+**[Live](https://claude.ai/code/artifact/18d32657-f282-4f46-aefe-b8b68c9ade3b)** —
+Quelle: `interactive/two-operators.html`
+
+Neu gestaltet: monochrom, hoher Kontrast, ein einziger Akzent (`#5D7FFF`),
+Haarlinien statt Karten. Kein Verlauf, kein Glow, kein Korn — Archivo (variable
+Breitenachse) plus JetBrains Mono.
+
+- **Rail-Navigation** links mit aktivem Abschnitt, Scroll-Fortschritt oben
+- **22 editierbare Felder**, lokal gespeichert
+- **Maschinen** — M5 Ultra / MacBook Pro M4 Max 36 GB
+- **Modell** — zeigt jetzt auch, auf wie viele Wochenstunden Konstantin fällt
+  (aus 50+), nicht nur den Umsatz
+- **50+ h/Woche** steht offen im Hero: der Preis des ersten Jahres
+
+### Zwei Werkzeuge
+
+`build/shot.js` — Ganzseiten-Screenshots über CDP. Scrollt vorher durch die Seite,
+weil IntersectionObserver-Reveals sonst nicht auslösen; `--reveal` erzwingt sie
+zusätzlich, `dark`/`light` emuliert das Farbschema.
+
+`build/probe.js` — wertet einen JS-Ausdruck gegen eine lokale HTML-Datei aus und
+gibt das Ergebnis als JSON zurück. Damit ließ sich eine Klassenkollision finden,
+die visuell nicht eindeutig war: `.chip.v` traf auch die Venture-Regel `.v`
+(`display:grid`), und dieselbe Regel vererbte `border-bottom` an `.kpi .v`.
+Klassen heißen jetzt `.vrow` und `.chip-alt`.
