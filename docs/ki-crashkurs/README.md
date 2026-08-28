@@ -67,3 +67,24 @@ erwartet; der Pfad steht in `doc.py` als `FONTDIR`.
 
 Seitenverweise im Text werden über `{{P:anker}}` gesetzt und erst nach dem Umbruch
 aufgelöst, damit sie beim Umstellen nicht veralten.
+
+---
+
+## Interaktive englische Fassung
+
+**[Off Cam, On Build](https://claude.ai/code/artifact/d51cc57a-617e-44a3-8fac-7ff06104691d)** —
+Quelle: `interactive/off-cam-on-build.html`
+
+Dieselbe Recherche, aber als interaktive Seite auf Englisch, mit der Chance
+zuerst und den Einschränkungen danach:
+
+- **Bearbeitbare persönliche Notiz** — Klick in den Text, wird lokal gespeichert
+- **Drei Sichten auf die Belege** — Chancen / Kleingedrucktes / Deutschland
+- **Verdienstrechner** — eigene Werte eingeben; zeigt Median, realistischen und
+  guten Fall gegen die Zahl, die Kurse versprechen
+- **Vier-Wochen-Plan** — 18 Aufgaben zum Abhaken, Fortschritt bleibt erhalten
+- **Prompts** mit Kopier-Knopf, Ressourcen, und eine Tabelle mit jeder
+  Behauptung der Seite und ihrem Prüfergebnis
+
+Hell und dunkel, ohne externe Bibliotheken; Fortschritt liegt in `localStorage`
+und verlässt das Gerät nicht.
