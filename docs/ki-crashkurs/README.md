@@ -144,3 +144,28 @@ gibt das Ergebnis als JSON zurück. Damit ließ sich eine Klassenkollision finde
 die visuell nicht eindeutig war: `.chip.v` traf auch die Venture-Regel `.v`
 (`display:grid`), und dieselbe Regel vererbte `border-bottom` an `.kpi .v`.
 Klassen heißen jetzt `.vrow` und `.chip-alt`.
+
+---
+
+## Operator Two (aktuelle Fassung)
+
+**[Live](https://claude.ai/code/artifact/d10d5b06-05f7-4572-bcac-decaa98bdf65)** —
+Quelle: `interactive/operator-two.html`
+
+Technische Fassung. Ohne 18+-Rahmung; OffCam steht als Netzwerk für kreative
+Zusammenarbeit drin.
+
+**Architektur-Diagramm (Abschnitt 01)** — handgeschriebenes Inline-SVG, das das
+eigentliche Argument zeichnet statt es zu behaupten: dieselbe Pipeline zweimal,
+einmal mit einer Review-Stufe (rot, Warteschlange, Rework-Schleife), einmal mit
+zwei unabhängigen Lanes. Der Unterschied ist der ganze Punkt — Generierung
+skaliert mit Geld, Review skaliert mit Menschen. Verbindungen animiert über
+`stroke-dashoffset`; auf schmalen Displays scrollt das Diagramm in einem eigenen
+Container (`min-width:760px`), statt auf unleserlich zu schrumpfen.
+
+Weiter: **Stack-Tabelle** (jede Zeile editierbar), **Terminal** mit
+Tipp-Animation und Loop, **Hardware** als Spec-Tabellen (M5 Ultra / M4 Max
+36 GB), Ventures, Ramp, Modell, Floor.
+
+27 editierbare Felder. Punktraster-Hintergrund mit Radial-Maske, Rail-Navigation,
+Scroll-Fortschritt. Keine Bibliotheken.
