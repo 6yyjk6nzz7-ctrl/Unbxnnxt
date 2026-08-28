@@ -88,3 +88,29 @@ zuerst und den Einschränkungen danach:
 
 Hell und dunkel, ohne externe Bibliotheken; Fortschritt liegt in `localStorage`
 und verlässt das Gerät nicht.
+
+---
+
+## The Second Company
+
+**[Live](https://claude.ai/code/artifact/e66359e5-e55c-41d7-95ae-adee2484868a)** —
+Quelle: `interactive/the-second-company.html`
+
+Nach dem ersten Jahr neu aufgesetzt: nicht mehr „lohnt sich KI?“, sondern das
+Angebot an Marion, als Mitgründerin einzusteigen.
+
+- **Hero** — die Jahreszahl als animierter Zähler in Messing-Verlauf
+- **19 editierbare Felder** — Zahlen, Firmennamen, Rollen, der Brief; alles
+  anklickbar und lokal gespeichert
+- **Drei Ventures** mit der vorgeschlagenen Aufteilung
+- **Vier-Wochen-Ramp** — auf Mitgründerin ausgelegt, nicht auf Anfängerin
+- **Zwei-Operator-Modell** — Basisjahr, Stunden, Horizont, Anzahl Firmen als
+  Eingaben; Zuwachs bewusst sublinear (+55 %, nicht +100 %) plus
+  Einarbeitungskurve und eine ehrliche Erfolgswahrscheinlichkeit
+- **The floor** — wie außergewöhnlich das Ergebnis im Verteilungsvergleich ist
+
+Instrument Serif / Onest / JetBrains Mono, Canvas-Aurora mit Korn-Overlay,
+scroll-getriggerte Reveals, keine externen Bibliotheken.
+
+`build/shot.js` macht Ganzseiten-Screenshots über CDP — scrollt vorher durch die
+Seite, damit IntersectionObserver-Reveals ausgelöst werden, bevor aufgenommen wird.
