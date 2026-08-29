@@ -1,0 +1,954 @@
+<title>Four Gates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --bg:#07080A; --surf:#0D0F13; --surf-2:#12151A;
+  --line:#1A1E25; --line-2:#262C35; --line-3:#39414D;
+  --fg:#F6F8FA; --fg-2:#8B93A0; --fg-3:#565E6B;
+  --volt:#5D7FFF; --volt-2:#8FA6FF; --volt-dim:#1E2A52;
+  --pos:#33D69F; --warn:#FF6B57; --amber:#FFB84D;
+  --r:3px; --pad:clamp(20px,5vw,64px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-variation-settings:"wdth" 100;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  padding-bottom:76px;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(circle at 1px 1px,var(--line) 1px,transparent 0);
+  background-size:34px 34px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 25%,transparent 78%);
+  mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 25%,transparent 78%);
+}
+main,header,footer,section,.hr,nav{position:relative;z-index:1}
+::selection{background:var(--volt);color:#fff}
+:focus-visible{outline:1.5px solid var(--volt);outline-offset:3px;border-radius:2px}
+
+#prog{position:fixed;top:0;left:0;height:1.5px;background:var(--volt);width:0;z-index:60;transition:width .1s linear}
+.rail{position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:2px}
+@media(max-width:1440px){.rail{display:none}}
+.rail a{display:flex;align-items:center;gap:10px;text-decoration:none;padding:4px 0;
+  font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--fg-3);transition:color .2s}
+.rail a::before{content:"";width:14px;height:1px;background:var(--line-2);transition:width .25s,background .25s}
+.rail a:hover{color:var(--fg-2)}
+.rail a.on{color:var(--fg)}
+.rail a.on::before{width:26px;background:var(--volt)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+.narrow{max-width:660px}
+section{padding:clamp(56px,7.5vw,110px) 0}
+.hr{height:1px;background:var(--line);border:0;margin:0}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.032em;line-height:1.03;text-wrap:balance;font-variation-settings:"wdth" 112}
+h2{font-size:clamp(30px,4.6vw,56px)}
+h3{font-size:clamp(19px,2.3vw,27px);letter-spacing:-.022em}
+p{margin:0 0 1.1em}p:last-child{margin-bottom:0}
+a{color:var(--volt)}
+.lbl{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--fg-3);display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.lbl span{color:var(--volt)}
+.lede{font-size:clamp(16px,1.8vw,19px);line-height:1.55;color:var(--fg-2)}
+.xs{font-size:12px;line-height:1.55;color:var(--fg-3);font-family:"JetBrains Mono",monospace}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+b,strong{font-weight:600;color:var(--fg)}
+.acc{color:var(--volt)}
+.rv{opacity:0;transform:translateY(10px);transition:opacity .42s ease,transform .42s cubic-bezier(.22,1,.36,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+[data-edit]{outline:none;border-radius:2px;transition:background .18s,box-shadow .18s}
+[data-edit]:hover{background:rgba(93,127,255,.07);box-shadow:0 0 0 4px rgba(93,127,255,.07)}
+[data-edit]:focus{background:rgba(93,127,255,.11);box-shadow:0 0 0 4px rgba(93,127,255,.11)}
+
+/* hero */
+.hero{padding-top:clamp(76px,11vw,140px);padding-bottom:clamp(48px,6vw,80px)}
+.chips{display:flex;gap:12px;align-items:center;margin-bottom:clamp(30px,4.6vw,50px);flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:99px;
+  padding:5px 12px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--fg-2);flex:none;white-space:nowrap}
+.chip i{width:5px;height:5px;border-radius:50%;background:var(--pos);flex:none}
+.hero h1{font-size:clamp(40px,8.4vw,110px);letter-spacing:-.045em;font-variation-settings:"wdth" 116;line-height:.95}
+.hero .sub{max-width:56ch;margin-top:24px}
+.ask{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--line);gap:1px;margin-top:clamp(34px,4.6vw,52px)}
+.ask>div{background:var(--surf);padding:20px}
+.ask .av{display:block;font-family:"JetBrains Mono",monospace;font-size:clamp(19px,2.4vw,26px);font-weight:600;font-variant-numeric:tabular-nums}
+.ask .av.p{color:var(--pos)}.ask .av.v{color:var(--volt-2)}
+.ask .ak{display:block;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);margin-top:9px}
+
+/* figure boxes */
+.figbox{border:1px solid var(--line);border-radius:var(--r);background:var(--surf);overflow:hidden}
+.figbox .fh{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:13px clamp(15px,2.2vw,22px);border-bottom:1px solid var(--line);background:var(--surf-2)}
+.figbox .fh span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+.svgwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:clamp(14px,2.2vw,24px)}
+.svgwrap svg{width:100%;min-width:820px;height:auto;display:block;color:var(--fg-3)}
+.swipe{display:none;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);padding:0 16px 14px}
+@media(max-width:880px){.swipe{display:block}}
+.g-bar{fill:var(--surf-2);stroke:var(--line-3)}
+.g-bar.hot{fill:rgba(93,127,255,.14);stroke:var(--volt)}
+.g-txt{fill:var(--fg);font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500}
+.g-sub{fill:var(--fg-3);font-family:"JetBrains Mono",monospace;font-size:9.5px}
+.g-axis{fill:var(--fg-3);font-family:"JetBrains Mono",monospace;font-size:9.5px}
+.g-gate{fill:var(--bg);stroke:var(--amber);stroke-width:1.5}
+.g-gl{fill:var(--amber);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.04em}
+
+/* phases */
+.phases{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));margin-top:20px}
+.phase{background:var(--bg);padding:clamp(19px,2.4vw,26px)}
+.phase.now{background:var(--surf)}
+.phase .pw{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);display:flex;justify-content:space-between;margin-bottom:13px}
+.phase.now .pw{color:var(--volt)}
+.phase h4{margin:0 0 4px;font-size:16.5px;font-weight:600}
+.phase .cost{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--fg-2);margin-bottom:12px}
+.phase ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.phase li{font-size:13px;line-height:1.5;color:var(--fg-2);display:flex;gap:10px}
+.phase li::before{content:"";width:5px;height:1px;background:var(--line-2);flex:none;margin-top:9px}
+.phase .gate{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-2);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--amber);line-height:1.55}
+.phase .gate::before{content:"◇ GATE — ";letter-spacing:.08em}
+
+/* workstreams */
+.ws-head{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(120px,1fr)) 92px;gap:10px;
+  padding:10px 0;border-bottom:1px solid var(--line-2);font-family:"JetBrains Mono",monospace;
+  font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+.ws{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(120px,1fr)) 92px;gap:10px;
+  padding:14px 0;border-bottom:1px solid var(--line);align-items:stretch}
+.ws:last-child{border-bottom:0}
+.ws .nm{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.ws .ds{font-size:12px;color:var(--fg-3);line-height:1.45;margin-top:3px;max-width:34ch}
+.opt{position:relative;border:1px solid var(--line-2);border-radius:2px;background:var(--surf);cursor:pointer;
+  padding:9px 10px;text-align:left;font-family:"JetBrains Mono",monospace;transition:border-color .18s,background .18s;
+  display:flex;flex-direction:column;gap:3px;width:100%}
+.opt:hover{border-color:var(--line-3)}
+.opt .oc{font-size:12.5px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+.opt .on{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.opt[aria-pressed="true"]{border-color:var(--volt);background:var(--volt-dim)}
+.opt[aria-pressed="true"] .oc{color:var(--volt-2)}
+.opt .rec{position:absolute;top:-7px;right:8px;font-size:8px;letter-spacing:.12em;color:var(--pos);
+  background:var(--bg);padding:0 5px;text-transform:uppercase}
+.ws .sel{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.ws .sel small{font-size:9px;letter-spacing:.1em;color:var(--fg-3);text-transform:uppercase;font-weight:400;margin-top:3px}
+@media(max-width:880px){
+  .ws-head{display:none}
+  .ws{grid-template-columns:1fr 1fr;gap:8px}
+  .ws>div:first-child{grid-column:1/-1}
+  .ws .sel{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:baseline;padding-top:4px}
+}
+
+/* controls */
+.ct{margin-bottom:20px}.ct:last-child{margin-bottom:0}
+.ct label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12.6px;color:var(--fg-2);margin-bottom:9px}
+.ct label i{font-style:normal;font-family:"JetBrains Mono",monospace;font-size:12.6px;color:var(--fg);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;background:var(--line-2);outline-offset:8px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--fg);cursor:pointer;transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.22)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--fg);cursor:pointer}
+
+.two{display:grid;gap:clamp(26px,4.6vw,70px);grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:start}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.two>*{min-width:0}
+.grid{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.g3{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.cell{background:var(--bg);padding:clamp(18px,2.4vw,25px)}
+.cell .i{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;color:var(--volt);display:block;margin-bottom:12px}
+.cell h4{margin:0 0 8px;font-size:15px;font-weight:600}
+.cell p{margin:0;font-size:13.2px;line-height:1.56;color:var(--fg-2)}
+
+canvas.chart{width:100%;height:300px;display:block}
+.legend{display:flex;gap:18px;flex-wrap:wrap;padding:12px clamp(15px,2.2vw,22px);border-top:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:7px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2)}
+.legend i{width:14px;height:2px;flex:none}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.readout>div{background:var(--surf);padding:15px clamp(14px,2vw,20px)}
+.readout .rv2{display:block;font-family:"JetBrains Mono",monospace;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.readout .rk{display:block;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin-top:7px}
+
+/* spec table + risks */
+.spec{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:12.3px}
+.spec th{text-align:left;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);
+  font-weight:500;padding:0 14px 10px 0;border-bottom:1px solid var(--line-2)}
+.spec td{padding:11px 14px 11px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--fg-2)}
+.spec tr:last-child td{border-bottom:0}
+.spec td:first-child{color:var(--fg)}
+.badge{display:inline-block;font-size:9px;letter-spacing:.1em;padding:2px 7px;border-radius:2px;border:1px solid}
+.badge.h{color:var(--warn);border-color:var(--warn)}
+.badge.m{color:var(--amber);border-color:var(--amber)}
+.badge.l{color:var(--pos);border-color:var(--pos)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.note{border:1px solid var(--line);border-radius:var(--r);background:var(--surf);padding:clamp(20px,3vw,34px)}
+.vd{margin-top:18px;padding:14px 16px;background:var(--surf);border-radius:2px;font-size:13px;line-height:1.6;color:var(--fg-2)}
+.vd b{color:var(--fg)}
+
+/* sticky bar */
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:55;background:rgba(10,12,15,.88);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line-2)}
+#bar .in{max-width:1240px;margin:0 auto;padding:10px var(--pad);display:flex;gap:clamp(14px,2.6vw,34px);
+  align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#bar .bi{flex:none}
+#bar .bv{display:block;font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+#bar .bv.p{color:var(--pos)}#bar .bv.v{color:var(--volt-2)}#bar .bv.a{color:var(--amber)}
+#bar .bk{display:block;font-family:"JetBrains Mono",monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);margin-top:2px;white-space:nowrap}
+
+footer{padding:clamp(40px,5.5vw,66px) 0 46px;border-top:1px solid var(--line)}
+.fr{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.fr .m{font-size:15px;font-weight:700;letter-spacing:-.02em;font-variation-settings:"wdth" 112}
+
+/* print — the bank copy */
+@media print{
+  :root{--bg:#fff;--surf:#fff;--surf-2:#f4f5f7;--line:#d6dade;--line-2:#c3c9d0;--line-3:#9aa3ad;
+    --fg:#111418;--fg-2:#3c434c;--fg-3:#6b7420;--fg-3:#6b7280;--volt:#2743c9;--volt-2:#2743c9;
+    --volt-dim:#e6eafd;--pos:#0a7d55;--warn:#b3311f;--amber:#8a5f00}
+  body{padding-bottom:0}
+  body::before,#prog,.rail,#bar,.swipe{display:none!important}
+  .rv{opacity:1!important;transform:none!important}
+  section{padding:26px 0;break-inside:avoid-page}
+  .hero{padding-top:20px}
+  a{color:var(--fg)}
+}
+</style>
+
+<div id="prog"></div>
+<nav class="rail" aria-label="Sections">
+  <a href="#top" data-t="top">00 Ask</a>
+  <a href="#gates" data-t="gates">01 Gates</a>
+  <a href="#build" data-t="build">02 Build</a>
+  <a href="#capex" data-t="capex">03 Capex</a>
+  <a href="#model" data-t="model">04 Model</a>
+  <a href="#bank" data-t="bank">05 Financing</a>
+  <a href="#risk" data-t="risk">06 Risks</a>
+  <a href="#ops" data-t="ops">07 Operators</a>
+</nav>
+
+<!-- ═══════ 00 ASK ═══════ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="chips rv">
+      <span class="chip"><i></i>Operating &amp; financing dossier</span>
+      <span class="chip"><span data-edit="h.who">K + M · two operators</span></span>
+      <span class="chip"><span data-edit="h.date">August 2026</span></span>
+    </div>
+    <h1 class="rv">Four <span class="acc">Gates.</span></h1>
+    <p class="lede sub rv">A staged operating plan: each phase is cheap to enter, must clear a
+      measurable gate before the next euro is spent, and buys its own upgrades from revenue —
+      including the workstation. Every figure on this page is an editable assumption, every cost is
+      itemised with three sourcing options, and the model recomputes live in the bar below.
+      Print it (Cmd+P) and it re-inks itself as a light document for a bank.</p>
+    <div class="ask rv">
+      <div><span class="av v" id="a-fac">—</span><span class="ak">Facility requested</span></div>
+      <div><span class="av" id="a-build">—</span><span class="ak">Itemised build cost</span></div>
+      <div><span class="av" id="a-be">—</span><span class="ak">Break-even · base case</span></div>
+      <div><span class="av p" id="a-dscr">—</span><span class="ak">DSCR · month 18 · indicative</span></div>
+      <div><span class="av" id="a-exp">—</span><span class="ak">Max cash exposure</span></div>
+    </div>
+    <p class="xs rv" style="margin-top:16px">Context, not collateral: year one closed at
+      <span data-edit="h.rev">$1M</span> revenue, one operator, 50+ h/wk. The plan below assumes
+      none of it repeats.</p>
+  </div>
+</header>
+
+<hr class="hr">
+
+<!-- ═══════ 01 GATES ═══════ -->
+<section id="gates">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(24px,3.4vw,40px)">
+      <div class="lbl"><span>01</span> Gates</div>
+      <h2>No gate cleared, no euro released.</h2>
+      <p class="lede" style="margin-top:16px">The reason a bank should read past page one: spending
+        is staged behind evidence. Phase 0 costs almost nothing and proves demand; the expensive
+        hardware sits at Gate 2, paid from revenue the plan has already banked by then.</p>
+    </div>
+
+    <div class="figbox rv">
+      <div class="fh"><span>Programme · 18 months</span><span class="mono">gate = release condition</span></div>
+      <div class="svgwrap">
+        <svg viewBox="0 0 1080 262" role="img" aria-label="Timeline of four phases across 18 months. Phase 0 Proof runs months 0 to 2, Phase 1 Build months 2 to 6, Phase 2 Scale months 6 to 12, Phase 3 Portfolio months 12 to 18. Diamond gate markers sit at months 2, 6 and 12 with their release conditions.">
+          <line x1="60" y1="210" x2="1040" y2="210" stroke="var(--line-2)"/>
+          <g class="g-axis">
+            <text x="60" y="232" text-anchor="middle">m0</text>
+            <text x="223" y="232" text-anchor="middle">m3</text>
+            <text x="386" y="232" text-anchor="middle">m6</text>
+            <text x="549" y="232" text-anchor="middle">m9</text>
+            <text x="712" y="232" text-anchor="middle">m12</text>
+            <text x="875" y="232" text-anchor="middle">m15</text>
+            <text x="1038" y="232" text-anchor="middle">m18</text>
+          </g>
+          <rect class="g-bar hot" x="60" y="48" width="109" height="34" rx="2"/>
+          <text class="g-txt" x="70" y="69">P0 · Proof</text>
+          <rect class="g-bar" x="169" y="96" width="217" height="34" rx="2"/>
+          <text class="g-txt" x="179" y="117">P1 · Build</text>
+          <rect class="g-bar" x="386" y="144" width="326" height="34" rx="2"/>
+          <text class="g-txt" x="396" y="165">P2 · Scale</text>
+          <rect class="g-bar" x="712" y="48" width="326" height="34" rx="2"/>
+          <text class="g-txt" x="722" y="69">P3 · Portfolio</text>
+          <g>
+            <rect class="g-gate" x="162" y="203" width="14" height="14" transform="rotate(45 169 210)"/>
+            <rect class="g-gate" x="379" y="203" width="14" height="14" transform="rotate(45 386 210)"/>
+            <rect class="g-gate" x="705" y="203" width="14" height="14" transform="rotate(45 712 210)"/>
+          </g>
+          <text class="g-gl" x="169" y="196" text-anchor="middle">G1 · demand</text>
+          <text class="g-gl" x="386" y="196" text-anchor="middle">G2 · opex break-even</text>
+          <text class="g-gl" x="712" y="196" text-anchor="middle">G3 · debt-free run-rate</text>
+          <text class="g-sub" x="70" y="40">costs ≈ €0 · existing machines</text>
+          <text class="g-sub" x="179" y="88">itemised build spend released</text>
+          <text class="g-sub" x="396" y="136">capex + marketing · from revenue</text>
+          <text class="g-sub" x="722" y="40">company two starts from month 8 assets</text>
+        </svg>
+      </div>
+      <div class="swipe">— swipe the timeline sideways</div>
+    </div>
+
+    <div class="phases rv">
+      <div class="phase now">
+        <div class="pw"><span>Phase 0 · m0–2</span><span>NOW</span></div>
+        <h4>Proof</h4>
+        <div class="cost" id="p0cost">spend ≈ €0</div>
+        <ul>
+          <li>Runs on the two machines we already own</li>
+          <li>Pipeline ships weekly; Marion takes the review lane</li>
+          <li>Waitlist + 10 user interviews + first paid pilot</li>
+        </ul>
+        <div class="gate" data-edit="g1">100 signups · 10 interviews · ≥ €1k collected</div>
+      </div>
+      <div class="phase">
+        <div class="pw"><span>Phase 1 · m2–6</span><span>BUILD</span></div>
+        <h4>Build-out</h4>
+        <div class="cost">spend = section 02 total (<span id="p1cost">—</span>)</div>
+        <ul>
+          <li>Ten workstreams, each priced three ways below</li>
+          <li>Freelance work on milestone contracts, escrow, our review lane as QA</li>
+          <li>Legal pack done by a firm, not a template</li>
+        </ul>
+        <div class="gate" data-edit="g2">MRR ≥ monthly opex incl. debt service</div>
+      </div>
+      <div class="phase">
+        <div class="pw"><span>Phase 2 · m6–12</span><span>SCALE</span></div>
+        <h4>Scale</h4>
+        <div class="cost">capex <span id="p2cost">—</span> + marketing <span id="p2mkt">—</span>/mo</div>
+        <ul>
+          <li><b>The workstation buys itself here</b> — M5 Ultra at Gate 2, from banked revenue</li>
+          <li>Paid acquisition switched on, killed if CAC payback &gt; 6 mo</li>
+          <li>Second processor + accounting handed to a Steuerberater</li>
+        </ul>
+        <div class="gate" data-edit="g3">3 months debt service covered from cashflow, DSCR ≥ 1.5</div>
+      </div>
+      <div class="phase">
+        <div class="pw"><span>Phase 3 · m12+</span><span>PORTFOLIO</span></div>
+        <h4>Portfolio</h4>
+        <div class="cost">funded from operating surplus</div>
+        <ul>
+          <li>Company two: the pipeline productised for other operators</li>
+          <li>Company three: named by Marion, not before Gate 3</li>
+          <li>Shared infrastructure — each launch starts from month-8 assets</li>
+        </ul>
+        <div class="gate" data-edit="g4">Facility fully serviced on schedule · surplus ≥ 2× founder pay</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 02 BUILD ═══════ -->
+<section id="build">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(22px,3vw,36px)">
+      <div class="lbl"><span>02</span> Build · use of funds</div>
+      <h2>Every line, priced three ways.</h2>
+      <p class="lede" style="margin-top:16px">In-house costs hours we barely have; agencies cost
+        money we mostly don't need to spend; the middle is bought on Fiverr / Upwork on milestone
+        contracts with our own review lane as QA. <b>Click a cell to choose the sourcing per line</b> —
+        the whole programme re-prices in the bar below. Figures are planning assumptions at mid-market
+        rates; the rate slider stress-tests them.</p>
+    </div>
+
+    <div class="figbox rv">
+      <div class="fh"><span>Workstreams · Phase 1 unless marked</span>
+        <span class="mono"><span id="ws-count">10</span> lines · <span id="ws-cash">—</span> cash · <span id="ws-hrs">—</span> in-house</span></div>
+      <div style="padding:6px clamp(15px,2.2vw,22px) 16px">
+        <div class="ws-head"><div>Workstream</div><div>In-house</div><div>Freelance</div><div>Agency / firm</div><div style="text-align:right">Selected</div></div>
+        <div id="ws-rows"></div>
+      </div>
+    </div>
+
+    <div class="two" style="margin-top:22px">
+      <div class="rv">
+        <div class="note">
+          <div class="ct"><label for="mult">Market-rate stress <i id="multv">×1.0</i></label>
+            <input type="range" id="mult" min="60" max="180" value="100" step="5"></div>
+          <div class="ct"><label for="cont">Contingency reserve <i id="contv">15%</i></label>
+            <input type="range" id="cont" min="0" max="35" value="15" step="1"></div>
+          <p class="xs" style="margin-top:14px">A plan without contingency is a hope. 15% is the
+            floor a credit officer expects; the stress slider shows the programme still standing at
+            +80% rates.</p>
+        </div>
+      </div>
+      <div class="grid g3 rv">
+        <div class="cell"><span class="i">rule 1</span><h4>Milestones, never retainers</h4>
+          <p>Freelance work is cut into deliverables with escrow release. A missed milestone costs one milestone, not a budget.</p></div>
+        <div class="cell"><span class="i">rule 2</span><h4>Our QA, always</h4>
+          <p>Everything external lands in the same review lane as our own output. Nothing ships because a stranger said it works.</p></div>
+        <div class="cell"><span class="i">rule 3</span><h4>Legal is never DIY</h4>
+          <p>The one line where the cheap option is the expensive option. A firm drafts it; we only decide what it must say.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 03 CAPEX ═══════ -->
+<section id="capex">
+  <div class="wrap two">
+    <div class="rv">
+      <div class="lbl"><span>03</span> Capex</div>
+      <h2>Hardware at the gate, not before.</h2>
+      <p class="lede" style="margin-top:16px">The flagship machine is in the plan — behind Gate 2,
+        purchased from banked revenue. Until then the current M4 Max does the job it did all of
+        year one. A bank reads that as discipline; we read it as free depreciation timing.</p>
+    </div>
+    <div class="rv">
+      <div class="note">
+        <div class="ct"><label for="cap1">Workstation · M5 Ultra, maxed <i id="cap1v">€9,500</i></label>
+          <input type="range" id="cap1" min="6000" max="16000" value="9500" step="250"></div>
+        <div class="ct"><label for="cap2">Second desk upgrade <i id="cap2v">€0</i></label>
+          <input type="range" id="cap2" min="0" max="6000" value="0" step="250"></div>
+        <p class="xs">Set the workstation to the configured price on order day — it isn't public
+          yet, so the model treats it as an assumption, released only if Gate 2 clears.
+          Depreciation: straight-line, 3 years (GWG rules don't apply at this size).</p>
+      </div>
+      <div class="readout" style="border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:14px">
+        <div><span class="rv2" id="capsum">—</span><span class="rk">Total capex · at Gate 2</span></div>
+        <div><span class="rv2" id="capdep">—</span><span class="rk">Monthly depreciation</span></div>
+        <div><span class="rv2 p" id="capsrc">from revenue</span><span class="rk">Funding source</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 04 MODEL ═══════ -->
+<section id="model">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(22px,3vw,36px)">
+      <div class="lbl"><span>04</span> Model · 24 months</div>
+      <h2>Three scenarios, one honest floor.</h2>
+      <p class="lede" style="margin-top:16px">Conservative is the case the bank underwrites; base is
+        the case we run; upside is the case we don't budget. Every input is a slider — move them and
+        watch the break-even marker, the exposure trough and the debt service re-solve.</p>
+    </div>
+
+    <div class="two rv">
+      <div class="note">
+        <div class="ct"><label for="mrr">Starting MRR at m0 <i id="mrrv">€500</i></label>
+          <input type="range" id="mrr" min="0" max="5000" value="500" step="50"></div>
+        <div class="ct"><label for="grow">Base growth / month <i id="growv">12%</i></label>
+          <input type="range" id="grow" min="4" max="30" value="12" step="1"></div>
+        <div class="ct"><label for="opex">Fixed opex / month <i id="opexv">€800</i></label>
+          <input type="range" id="opex" min="200" max="4000" value="800" step="50"></div>
+        <div class="ct"><label for="mkt">Marketing / month · from Gate 2 <i id="mktv">€1,500</i></label>
+          <input type="range" id="mkt" min="0" max="6000" value="1500" step="100"></div>
+        <p class="xs" style="margin-top:12px">Scenario spread: conservative = base × 0.5,
+          upside = base × 1.7. Growth compounds monthly; churn is inside the net figure.
+          Opex = tools, APIs, insurance, accounting — founder pay enters at Gate 2.</p>
+      </div>
+      <div class="figbox">
+        <div class="fh"><span>Revenue vs total monthly cost</span><span class="mono" id="ch1meta">—</span></div>
+        <div style="padding:14px clamp(12px,1.8vw,20px) 4px"><canvas class="chart" id="ch1"></canvas></div>
+        <div class="legend">
+          <span><i style="background:var(--pos)"></i>Upside</span>
+          <span><i style="background:var(--volt)"></i>Base</span>
+          <span><i style="background:var(--amber)"></i>Conservative</span>
+          <span><i style="background:var(--warn);height:1px;border-bottom:1px dashed var(--warn);background:none"></i>Total cost incl. debt</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="figbox rv" style="margin-top:22px">
+      <div class="fh"><span>Cumulative cash · base case · facility drawn at m0</span><span class="mono" id="ch2meta">—</span></div>
+      <div style="padding:14px clamp(12px,1.8vw,20px) 4px"><canvas class="chart" id="ch2" style="height:240px"></canvas></div>
+      <div class="readout">
+        <div><span class="rv2 a" id="r-exp">—</span><span class="rk">Max exposure · trough</span></div>
+        <div><span class="rv2 v" id="r-fac">—</span><span class="rk">Facility = trough ×1.2, rounded</span></div>
+        <div><span class="rv2" id="r-be">—</span><span class="rk">Break-even · base</span></div>
+        <div><span class="rv2" id="r-becons">—</span><span class="rk">Break-even · conservative</span></div>
+        <div><span class="rv2 p" id="r-dscr">—</span><span class="rk">DSCR m18 · base</span></div>
+        <div><span class="rv2" id="r-pay">—</span><span class="rk">Programme payback</span></div>
+      </div>
+      <div class="vd" id="vd" style="margin:16px clamp(15px,2.2vw,22px) 18px"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 05 FINANCING ═══════ -->
+<section id="bank">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(22px,3vw,36px)">
+      <div class="lbl"><span>05</span> Financing</div>
+      <h2>Why a bank reads this one.</h2>
+      <p class="lede" style="margin-top:16px">Banks don't decline AI — they decline plans with no
+        repayment mechanics. This one leads with the thing they underwrite: staged drawdown, an
+        itemised use of funds, a conservative case that still services debt, and covenants we
+        propose ourselves.</p>
+    </div>
+
+    <div class="two rv">
+      <div class="note">
+        <div class="ct"><label for="rate">Interest rate · set to your offer <i id="ratev">6.0%</i></label>
+          <input type="range" id="rate" min="3" max="14" value="6" step="0.5"></div>
+        <div class="ct"><label for="term">Term <i id="termv">5 years</i></label>
+          <input type="range" id="term" min="3" max="7" value="5" step="1"></div>
+        <div class="readout" style="border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px">
+          <div><span class="rv2 v" id="l-fac">—</span><span class="rk">Facility</span></div>
+          <div><span class="rv2" id="l-pay">—</span><span class="rk">Annuity / month</span></div>
+          <div><span class="rv2" id="l-tot">—</span><span class="rk">Total cost of credit</span></div>
+        </div>
+        <p class="xs" style="margin-top:14px">Rate and term are assumptions, not quotes — set them
+          to the Hausbank's offer in the meeting. Instruments to ask for, in order: ERP-Gründerkredit
+          StartGeld (KfW, via any Hausbank, 80% Haftungsfreistellung), a Bürgschaftsbank guarantee if
+          collateral is thin, plain Kontokorrent only for the working-capital sliver.</p>
+      </div>
+      <div class="grid g3">
+        <div class="cell"><span class="i">covenant · proposed</span><h4>Gate spend-lock</h4>
+          <p>No Phase-1 drawdown before Gate 1 evidence is delivered to the bank. We propose the covenant; they usually soften it.</p></div>
+        <div class="cell"><span class="i">covenant · proposed</span><h4>DSCR floor 1.2</h4>
+          <p>Measured quarterly from month 9. Breach pauses marketing spend automatically — the model shows the mechanism.</p></div>
+        <div class="cell"><span class="i">covenant · proposed</span><h4>Reporting pack</h4>
+          <p>Monthly MRR, churn, cash and covenant sheet, generated by the same pipeline that runs the business. Sample on request.</p></div>
+        <div class="cell"><span class="i">what they'll ask</span><h4>The file</h4>
+          <p>Selbstauskunft, last tax assessment, this dossier printed, the year-one account statements, and the Gewerbe registration.</p></div>
+        <div class="cell"><span class="i">what kills it</span><h4>What we avoid</h4>
+          <p>Hockey-stick-only projections, "the market is huge", uncosted plans, and asking for the maximum instead of the trough ×1.2.</p></div>
+        <div class="cell"><span class="i">fallback</span><h4>If the bank says no</h4>
+          <p>The gates don't change — the timeline stretches. Phase 1 self-funds from Phase 0 revenue at roughly half speed. The plan survives its own rejection.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 06 RISKS ═══════ -->
+<section id="risk">
+  <div class="wrap">
+    <div class="narrow rv" style="margin-bottom:clamp(20px,2.8vw,32px)">
+      <div class="lbl"><span>06</span> Risk register</div>
+      <h2>Named, owned, priced.</h2>
+    </div>
+    <div class="figbox rv">
+      <div class="fh"><span>Register · reviewed at every gate</span><span class="mono">L = likelihood · I = impact</span></div>
+      <div class="scroll" style="padding:8px clamp(15px,2.2vw,22px) 16px">
+        <table class="spec" style="min-width:760px">
+          <thead><tr><th style="width:26%">Risk</th><th>L</th><th>I</th><th>Mitigation — in the plan, not appended to it</th></tr></thead>
+          <tbody>
+            <tr><td>Churn above plan</td><td><span class="badge m">M</span></td><td><span class="badge h">H</span></td><td data-edit="rk1">Cohort review monthly; marketing auto-pauses if churn &gt; 6% — same trigger as the DSCR covenant.</td></tr>
+            <tr><td>Payment account review / freeze</td><td><span class="badge m">M</span></td><td><span class="badge h">H</span></td><td data-edit="rk2">Two processors live from day one; 2-month cost reserve inside contingency; clean content policy documented.</td></tr>
+            <tr><td>Key-person concentration</td><td><span class="badge h">H</span></td><td><span class="badge h">H</span></td><td data-edit="rk3">This dossier is the mitigation: a second operator, runbooks in git, nothing that lives only in one head.</td></tr>
+            <tr><td>Model / API price shifts</td><td><span class="badge m">M</span></td><td><span class="badge m">M</span></td><td data-edit="rk4">Multi-vendor routing; the Gate-2 workstation runs local models as the fallback floor.</td></tr>
+            <tr><td>Copycat with distribution</td><td><span class="badge m">M</span></td><td><span class="badge m">M</span></td><td data-edit="rk5">Niche depth over breadth; community is the moat, and it doesn't copy-paste.</td></tr>
+            <tr><td>Freelancer quality variance</td><td><span class="badge m">M</span></td><td><span class="badge l">L</span></td><td data-edit="rk6">Milestone escrow, one paid test task before any contract, our review lane as acceptance test.</td></tr>
+            <tr><td>Regulatory change</td><td><span class="badge l">L</span></td><td><span class="badge h">H</span></td><td data-edit="rk7">Legal review budgeted at every gate, by the firm that drafted the pack — not re-scoped from scratch.</td></tr>
+            <tr><td>Founder burnout</td><td><span class="badge m">M</span></td><td><span class="badge h">H</span></td><td data-edit="rk8">Hours are a gate metric: Gate 3 fails if the plan only works above 45 h/wk. Written down, on purpose.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr">
+
+<!-- ═══════ 07 OPERATORS ═══════ -->
+<section id="ops">
+  <div class="wrap two">
+    <div class="rv">
+      <div class="lbl"><span>07</span> Operators</div>
+      <h2>Two lanes, one book.</h2>
+      <p class="lede" style="margin-top:16px">The org chart is two people and a pipeline. The split
+        below is a proposal — argue with it, then we put it in writing at Gate 1, not over dinner.</p>
+    </div>
+    <div class="rv">
+      <div class="scroll figbox" style="padding:8px clamp(15px,2.2vw,22px) 16px">
+        <table class="spec" style="min-width:560px">
+          <thead><tr><th>Surface</th><th>Konstantin</th><th>Marion</th></tr></thead>
+          <tbody>
+            <tr><td>Pipeline &amp; infrastructure</td><td class="mono" style="color:var(--volt-2)">owns</td><td>reviews</td></tr>
+            <tr><td>Taste, copy, positioning</td><td>reviews</td><td class="mono" style="color:var(--volt-2)">owns</td></tr>
+            <tr><td>Freelancer management</td><td>briefs</td><td class="mono" style="color:var(--volt-2)">accepts / rejects</td></tr>
+            <tr><td>Bank &amp; reporting pack</td><td class="mono" style="color:var(--volt-2)">owns</td><td>co-signs</td></tr>
+            <tr><td>Company three</td><td>builds</td><td class="mono" style="color:var(--volt-2)">names &amp; leads</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note" style="margin-top:14px">
+        <div class="xs" style="margin-bottom:10px">— The actual reason, click to rewrite</div>
+        <div contenteditable="true" spellcheck="false" data-edit="letter" style="font-size:15.5px;line-height:1.6">
+          <p>Marion — I can defend every number above to a credit officer. The one thing I can't
+            model is the half of this I'm worst at, and it's the half you've always been better at.
+            That's not romance, it's the risk register: key-person concentration, likelihood high,
+            impact high, mitigation — you.</p>
+          <p style="margin-bottom:0">Read it like a banker. Then say yes like a founder.</p>
+        </div>
+        <div class="mono" style="margin-top:16px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--volt)">— Konstantin</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap fr">
+    <span class="m">Four Gates</span>
+    <span class="xs">Prepared for the Hausbank meeting · <span data-edit="f.d">rev 1 · 28 Aug 2026</span> · assumptions editable · Cmd+P for the bank copy</span>
+  </div>
+</footer>
+
+<div id="bar" aria-label="Live programme totals">
+  <div class="in">
+    <div class="bi"><span class="bv" id="b-build">—</span><span class="bk">Build · selected</span></div>
+    <div class="bi"><span class="bv" id="b-hrs">—</span><span class="bk">In-house hours</span></div>
+    <div class="bi"><span class="bv" id="b-cap">—</span><span class="bk">Capex · Gate 2</span></div>
+    <div class="bi"><span class="bv" id="b-opex">—</span><span class="bk">Opex / mo</span></div>
+    <div class="bi"><span class="bv v" id="b-fac">—</span><span class="bk">Facility</span></div>
+    <div class="bi"><span class="bv a" id="b-ann">—</span><span class="bk">Annuity / mo</span></div>
+    <div class="bi"><span class="bv p" id="b-be">—</span><span class="bk">Break-even</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var LS={g:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:v;}catch(e){return d;}},
+          s:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+
+  /* chrome */
+  var prog=document.getElementById('prog');
+  function onScroll(){var h=document.documentElement.scrollHeight-innerHeight;
+    prog.style.width=(h>0?(scrollY/h)*100:0)+'%';}
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  var links=[].slice.call(document.querySelectorAll('.rail a'));
+  var secs=links.map(function(a){return document.getElementById(a.dataset.t);}).filter(Boolean);
+  var rIO=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return;
+    links.forEach(function(a){a.classList.toggle('on',a.dataset.t===e.target.id);});});},
+    {rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(function(s){rIO.observe(s);});
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return; e.target.classList.add('in'); io.unobserve(e.target);});},
+    {threshold:.1,rootMargin:'0px 0px -6% 0px'});
+  [].slice.call(document.querySelectorAll('.rv')).forEach(function(el,i){
+    el.style.transitionDelay=(Math.min(i,5)*40)+'ms'; io.observe(el);});
+
+  [].slice.call(document.querySelectorAll('[data-edit]')).forEach(function(el){
+    var k='fg.'+el.dataset.edit, saved=LS.g(k,null);
+    if(saved!==null) el.innerHTML=saved;
+    el.setAttribute('contenteditable','true'); el.setAttribute('spellcheck','false');
+    var tm;
+    el.addEventListener('input',function(){clearTimeout(tm);
+      tm=setTimeout(function(){LS.s(k,el.innerHTML);},320);});
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'&&el.dataset.edit!=='letter'){e.preventDefault();el.blur();}});
+  });
+
+  /* ── data: workstreams (planning assumptions, mid-market) ── */
+  var WS=[
+    {id:'brand', n:'Brand & identity', d:'Name lockup, palette, templates',
+     o:[{c:0,h:20,l:'20 h'},{c:350,l:'Fiverr set'},{c:4500,l:'Studio'}], rec:1},
+    {id:'front', n:'Product frontend', d:'App UI on the existing prototype',
+     o:[{c:0,h:120,l:'120 h · pipeline'},{c:4000,l:'Contractor'},{c:18000,l:'Agency'}], rec:0},
+    {id:'back', n:'Backend & auth', d:'Accounts, sessions, data model',
+     o:[{c:0,h:80,l:'80 h · pipeline'},{c:3500,l:'Contractor'},{c:15000,l:'Agency'}], rec:0},
+    {id:'pay', n:'Payments & billing', d:'Subscriptions, invoices, dunning',
+     o:[{c:0,h:30,l:'30 h'},{c:1200,l:'Specialist'},{c:6000,l:'Consultancy'}], rec:1},
+    {id:'verif', n:'Member verification', d:'Identity / trust checks at signup',
+     o:[{c:0,h:25,l:'25 h'},{c:1500,l:'Integrator'},{c:7500,l:'Vendor project'}], rec:1},
+    {id:'legal', n:'Legal pack', d:'Impressum, AGB, DSGVO, contracts',
+     o:[{c:0,h:15,l:'15 h · risky'},{c:600,l:'Template svc'},{c:3500,l:'Law firm'}], rec:2},
+    {id:'copy', n:'Copy & localisation', d:'DE/EN product language',
+     o:[{c:0,h:25,l:'25 h · Marion'},{c:700,l:'Freelancer'},{c:3000,l:'Agency'}], rec:0},
+    {id:'site', n:'Marketing site & SEO', d:'Public site, landing tests',
+     o:[{c:0,h:30,l:'30 h · pipeline'},{c:900,l:'Fiverr build'},{c:5000,l:'Agency'}], rec:0},
+    {id:'mkt', n:'Launch marketing · 90d', d:'Content engine, partnerships',
+     o:[{c:0,h:40,l:'40 h'},{c:1800,l:'Freelancer'},{c:9000,l:'Agency'}], rec:1},
+    {id:'supp', n:'Support & community', d:'Helpdesk, macros, moderation kit',
+     o:[{c:0,h:20,l:'20 h'},{c:800,l:'VA setup'},{c:3800,l:'Agency'}], rec:0}
+  ];
+  var ONAMES=['In-house','Freelance','Agency'];
+  var sel={};
+  WS.forEach(function(w){ sel[w.id]=parseInt(LS.g('fg.ws.'+w.id, String(w.rec)),10); });
+
+  var eur=function(n){return '€'+Math.round(n).toLocaleString('en-US');};
+  var eurK=function(n){return n>=100000?('€'+Math.round(n/1000)+'k'):eur(n);};
+
+  /* render workstream rows */
+  var rowsEl=document.getElementById('ws-rows');
+  WS.forEach(function(w){
+    var row=document.createElement('div'); row.className='ws';
+    var c1=document.createElement('div');
+    c1.innerHTML='<div class="nm">'+w.n+'</div><div class="ds">'+w.d+'</div>';
+    row.appendChild(c1);
+    w.o.forEach(function(o,oi){
+      var b=document.createElement('button'); b.type='button'; b.className='opt';
+      b.setAttribute('aria-pressed', sel[w.id]===oi?'true':'false');
+      b.setAttribute('aria-label', w.n+' — '+ONAMES[oi]);
+      var cost=o.c===0?('€0 · '+o.h+'h'):eur(o.c);
+      b.innerHTML=(w.rec===oi?'<span class="rec">rec</span>':'')+
+        '<span class="oc" data-base="'+o.c+'">'+cost+'</span><span class="on">'+o.l+'</span>';
+      b.addEventListener('click',function(){
+        sel[w.id]=oi; LS.s('fg.ws.'+w.id,String(oi));
+        [].slice.call(row.querySelectorAll('.opt')).forEach(function(x,xi){
+          x.setAttribute('aria-pressed', xi===oi?'true':'false');});
+        recalc();
+      });
+      row.appendChild(b);
+    });
+    var c5=document.createElement('div'); c5.className='sel'; c5.id='sel-'+w.id;
+    row.appendChild(c5);
+    rowsEl.appendChild(row);
+  });
+
+  /* inputs */
+  function slider(id,fmt,store){
+    var el=document.getElementById(id), out=document.getElementById(id+'v');
+    var saved=LS.g('fg.in.'+id,null); if(saved!==null) el.value=saved;
+    function show(){ out.textContent=fmt(+el.value); }
+    el.addEventListener('input',function(){ show(); LS.s('fg.in.'+id,el.value); recalc(); });
+    show(); return el;
+  }
+  var mult=slider('mult',function(v){return '×'+(v/100).toFixed(2).replace(/0$/,'');});
+  var cont=slider('cont',function(v){return v+'%';});
+  var cap1=slider('cap1',function(v){return eur(v);});
+  var cap2=slider('cap2',function(v){return eur(v);});
+  var mrr=slider('mrr',function(v){return eur(v);});
+  var grow=slider('grow',function(v){return v+'%';});
+  var opex=slider('opex',function(v){return eur(v);});
+  var mkt=slider('mkt',function(v){return eur(v);});
+  var rate=slider('rate',function(v){return v.toFixed(1)+'%';});
+  var term=slider('term',function(v){return v+' years';});
+
+  /* charts */
+  function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+  var printMode=false;
+  function setupCanvas(cv){
+    var dpr=Math.min(devicePixelRatio||1,2);
+    var w=cv.clientWidth,h=cv.clientHeight;
+    cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+    var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+    return {ctx:ctx,w:w,h:h};
+  }
+
+  var H=24; /* chart horizon, months */
+  var M=36; /* model horizon */
+  var model={};
+
+  function recalc(){
+    /* build cost */
+    var cash=0,hrs=0;
+    WS.forEach(function(w){
+      var o=w.o[sel[w.id]];
+      var c=o.c*(+mult.value/100);
+      cash+=c; if(o.c===0) hrs+=o.h;
+      var s=document.getElementById('sel-'+w.id);
+      s.innerHTML=(o.c===0?('€0<small>'+o.h+' h in-house</small>'):(eur(c)+'<small>'+ONAMES[sel[w.id]]+'</small>'));
+    });
+    var build=cash*(1+(+cont.value)/100);
+    var capex=(+cap1.value)+(+cap2.value);
+
+    /* monthly model */
+    var g=(+grow.value)/100, gC=g*0.5, gU=g*1.7, m0=+mrr.value;
+    var opx=+opex.value, mk=+mkt.value;
+    var rev=[],revC=[],revU=[];
+    for(var m=0;m<M;m++){
+      rev.push(m0*Math.pow(1+g,m));
+      revC.push(m0*Math.pow(1+gC,m));
+      revU.push(m0*Math.pow(1+gU,m));
+    }
+    /* exposure without facility */
+    var cum=0,minCum=0;
+    for(m=0;m<M;m++){
+      var out=opx+(m>=6?mk:0);
+      if(m===2) out+=build;
+      if(m===6) out+=capex;
+      cum+=rev[m]-out;
+      if(cum<minCum)minCum=cum;
+    }
+    var expo=Math.max(0,-minCum);
+    var fac=Math.ceil(expo*1.2/1000)*1000;
+    /* debt */
+    var i=(+rate.value)/100/12, n=(+term.value)*12;
+    var ann=fac>0?fac*i/(1-Math.pow(1+i,-n)):0;
+    /* cost incl debt, break-evens */
+    function costAt(m){return opx+(m>=6?mk:0)+ann;}
+    function beOf(r){for(var m=0;m<M;m++){if(r[m]>=costAt(m))return m;}return -1;}
+    var be=beOf(rev), beC=beOf(revC);
+    /* cash with facility */
+    var cash2=[],c2=fac;
+    for(m=0;m<M;m++){
+      var out2=costAt(m);
+      if(m===2) out2+=build;
+      if(m===6) out2+=capex;
+      c2+=rev[m]-out2; cash2.push(c2);
+    }
+    var dscr=ann>0?((rev[18]-opx-mk)/ann):Infinity;
+    var pb=-1,acc=0;
+    for(m=0;m<M;m++){acc+=rev[m]-costAt(m); if(acc>=build+capex){pb=m;break;}}
+
+    model={rev:rev,revC:revC,revU:revU,cash2:cash2,build:build,capex:capex,fac:fac,ann:ann,
+           be:be,beC:beC,dscr:dscr,pb:pb,expo:expo,costAt:costAt,hrs:hrs};
+
+    /* bind */
+    var mo=function(m){return m<0?'> 36 mo':('month '+(m));};
+    document.getElementById('ws-cash').textContent=eur(cash*(1));
+    document.getElementById('ws-hrs').textContent=hrs+' h';
+    document.getElementById('b-build').textContent=eur(build);
+    document.getElementById('b-hrs').textContent=hrs+' h';
+    document.getElementById('b-cap').textContent=eur(capex);
+    document.getElementById('b-opex').textContent=eur(opx+mk)+' peak';
+    document.getElementById('b-fac').textContent=eur(fac);
+    document.getElementById('b-ann').textContent=eur(ann);
+    document.getElementById('b-be').textContent=mo(be);
+    document.getElementById('a-fac').textContent=eur(fac);
+    document.getElementById('a-build').textContent=eur(build);
+    document.getElementById('a-be').textContent=mo(be);
+    document.getElementById('a-dscr').textContent=(dscr===Infinity?'n/a':dscr.toFixed(2));
+    document.getElementById('a-exp').textContent=eur(expo);
+    document.getElementById('p1cost').textContent=eur(build);
+    document.getElementById('p2cost').textContent=eur(capex);
+    document.getElementById('p2mkt').textContent=eur(mk);
+    document.getElementById('capsum').textContent=eur(capex);
+    document.getElementById('capdep').textContent=eur(capex/36)+' /mo';
+    document.getElementById('r-exp').textContent='−'+eur(expo).slice(1);
+    document.getElementById('r-fac').textContent=eur(fac);
+    document.getElementById('r-be').textContent=mo(be);
+    document.getElementById('r-becons').textContent=mo(beC);
+    document.getElementById('r-dscr').textContent=(dscr===Infinity?'n/a':dscr.toFixed(2));
+    document.getElementById('r-pay').textContent=mo(pb);
+    document.getElementById('l-fac').textContent=eur(fac);
+    document.getElementById('l-pay').textContent=eur(ann);
+    document.getElementById('l-tot').textContent=eur(ann*n);
+    document.getElementById('ch1meta').textContent='m0–m'+H+' · monthly';
+    document.getElementById('ch2meta').textContent='trough −'+eur(expo).slice(1)+' · floor with facility '+eur(fac);
+
+    var v=document.getElementById('vd'),msg;
+    if(be<0){
+      msg='<b>This configuration never breaks even inside 36 months.</b> Either the growth '+
+          'assumption is too low, the cost base too high, or the sourcing too expensive — a bank '+
+          'stops reading here, and so should we. Move something.';
+    } else if(dscr<1.2){
+      msg='<b>DSCR at month 18 is '+dscr.toFixed(2)+' — below the 1.2 a credit officer wants.</b> '+
+          'Stretch the term, shrink the facility, or cut opex; the covenant section proposes the '+
+          'same floor, so the plan must clear it.';
+    } else if(beC<0){
+      msg='<b>Base case holds ('+mo(be)+', DSCR '+dscr.toFixed(2)+') but the conservative case '+
+          'never breaks even.</b> Underwriters price the conservative line. Trim fixed opex or '+
+          'marketing until it lands inside the horizon.';
+    } else {
+      msg='<b>Bankable shape:</b> break-even '+mo(be)+' base / '+mo(beC)+' conservative, DSCR '+
+          dscr.toFixed(2)+' at month 18, exposure capped at '+eur(model.expo)+' against a '+
+          eur(fac)+' facility, programme payback '+mo(pb)+'. This is the page to print.';
+    }
+    v.innerHTML=msg;
+    draw();
+  }
+
+  function draw(){
+    var P={
+      fg2:cssVar('--fg-2'),fg3:cssVar('--fg-3'),line:cssVar('--line'),line2:cssVar('--line-2'),
+      volt:cssVar('--volt'),pos:cssVar('--pos'),amber:cssVar('--amber'),warn:cssVar('--warn')
+    };
+    var pad={l:56,r:14,t:14,b:26};
+    /* chart 1 */
+    var cv=document.getElementById('ch1'); if(!cv.clientWidth){return;}
+    var s=setupCanvas(cv),ctx=s.ctx,W=s.w,Hh=s.h;
+    ctx.clearRect(0,0,W,Hh);
+    var costs=[],maxY=0;
+    for(var m=0;m<=H;m++){costs.push(model.costAt(m));}
+    for(m=0;m<=H;m++){maxY=Math.max(maxY,model.rev[m],costs[m]);}
+    maxY*=1.2;
+    var X=function(m){return pad.l+(W-pad.l-pad.r)*m/H;};
+    var Y=function(v){return pad.t+(Hh-pad.t-pad.b)*(1-v/maxY);};
+    ctx.strokeStyle=P.line; ctx.lineWidth=1; ctx.fillStyle=P.fg3;
+    ctx.font='9.5px "JetBrains Mono",monospace';
+    for(var gy=0;gy<=4;gy++){
+      var vy=maxY*gy/4;
+      ctx.beginPath(); ctx.moveTo(pad.l,Y(vy)); ctx.lineTo(W-pad.r,Y(vy)); ctx.stroke();
+      ctx.fillText(eurK(vy), 6, Y(vy)+3);
+    }
+    for(var gx=0;gx<=H;gx+=6){ ctx.fillText('m'+gx, X(gx)-8, Hh-8); }
+    function line(arr,col,dash,width){
+      ctx.strokeStyle=col; ctx.lineWidth=width||1.6; ctx.setLineDash(dash||[]);
+      ctx.beginPath();
+      var started=false;
+      for(var m=0;m<=H;m++){
+        var v=arr[m]; if(v>maxY){ if(started){ctx.lineTo(X(m),Y(maxY));} break; }
+        if(!started){ctx.moveTo(X(m),Y(v));started=true;} else ctx.lineTo(X(m),Y(v));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    line(costs,P.warn,[4,5],1.2);
+    line(model.revU,P.pos);
+    line(model.revC,P.amber);
+    line(model.rev,P.volt,[],2);
+    /* endpoint dot base */
+    ctx.fillStyle=P.volt; ctx.beginPath(); ctx.arc(X(H),Y(Math.min(model.rev[H],maxY)),3,0,6.283); ctx.fill();
+    /* break-even marker */
+    if(model.be>=0&&model.be<=H){
+      var bx=X(model.be),by=Y(model.rev[model.be]);
+      ctx.strokeStyle=P.fg2; ctx.setLineDash([2,4]);
+      ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx,Hh-pad.b); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=P.fg2; ctx.fillText('break-even', bx-26, by-10);
+      ctx.beginPath(); ctx.arc(bx,by,3,0,6.283); ctx.fill();
+    }
+    /* chart 2: cumulative cash */
+    cv=document.getElementById('ch2'); if(!cv.clientWidth){return;}
+    s=setupCanvas(cv); ctx=s.ctx; W=s.w; Hh=s.h;
+    ctx.clearRect(0,0,W,Hh);
+    var lo=0,hi=0;
+    for(m=0;m<=H;m++){lo=Math.min(lo,model.cash2[m]);hi=Math.max(hi,model.cash2[m]);}
+    lo=Math.min(lo,-1000)*1.15; hi=Math.max(hi,1000)*1.15;
+    var Y2=function(v){return pad.t+(Hh-pad.t-pad.b)*(1-(v-lo)/(hi-lo));};
+    ctx.strokeStyle=P.line; ctx.fillStyle=P.fg3; ctx.font='9.5px "JetBrains Mono",monospace';
+    [lo*0.8,0,hi*0.8].forEach(function(vv){
+      ctx.beginPath(); ctx.moveTo(pad.l,Y2(vv)); ctx.lineTo(W-pad.r,Y2(vv)); ctx.stroke();
+      ctx.fillText(eurK(vv),6,Y2(vv)+3);
+    });
+    for(gx=0;gx<=H;gx+=6){ ctx.fillText('m'+gx, X(gx)-8, Hh-8); }
+    /* zero line stronger */
+    ctx.strokeStyle=P.line2; ctx.beginPath(); ctx.moveTo(pad.l,Y2(0)); ctx.lineTo(W-pad.r,Y2(0)); ctx.stroke();
+    /* area */
+    ctx.beginPath(); ctx.moveTo(X(0),Y2(0));
+    for(m=0;m<=H;m++){ctx.lineTo(X(m),Y2(model.cash2[m]));}
+    ctx.lineTo(X(H),Y2(0)); ctx.closePath();
+    ctx.fillStyle='rgba(93,127,255,.12)'; ctx.fill();
+    ctx.strokeStyle=P.volt; ctx.lineWidth=2; ctx.beginPath();
+    for(m=0;m<=H;m++){var px=X(m),py=Y2(model.cash2[m]); if(m===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.stroke();
+    /* trough marker */
+    var tm=0; for(m=0;m<=H;m++){ if(model.cash2[m]<model.cash2[tm]) tm=m; }
+    ctx.fillStyle=P.amber; ctx.beginPath(); ctx.arc(X(tm),Y2(model.cash2[tm]),3.5,0,6.283); ctx.fill();
+    ctx.fillText('trough m'+tm, X(tm)-20, Y2(model.cash2[tm])+16);
+  }
+
+  var rT; addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(draw,120);},{passive:true});
+  addEventListener('beforeprint',function(){printMode=true;draw();});
+  addEventListener('afterprint',function(){printMode=false;draw();});
+
+  recalc();
+  /* charts sit below the fold; size them once visible */
+  var cIO=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){draw(); cIO.unobserve(e.target);}});},{threshold:.05});
+  cIO.observe(document.getElementById('ch1'));
+  cIO.observe(document.getElementById('ch2'));
+})();
+</script>

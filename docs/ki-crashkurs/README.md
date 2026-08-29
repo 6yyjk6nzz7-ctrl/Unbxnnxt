@@ -169,3 +169,33 @@ Tipp-Animation und Loop, **Hardware** als Spec-Tabellen (M5 Ultra / M4 Max
 
 27 editierbare Felder. Punktraster-Hintergrund mit Radial-Maske, Rail-Navigation,
 Scroll-Fortschritt. Keine Bibliotheken.
+
+---
+
+## Four Gates (aktuelle Fassung)
+
+**[Live](https://claude.ai/code/artifact/86123f61-2840-4a34-afcb-59362542a766)** —
+Quelle: `interactive/four-gates.html`
+
+Bank-taugliches Finanzierungsdossier statt Pitch-Seite. Alles rechnet live:
+
+- **Gates** — vier Phasen, Ausgaben erst nach messbarem Gate; Workstation
+  bewusst hinter Gate 2, aus Umsatz bezahlt. Gantt als Inline-SVG.
+- **Build-Matrix** — 10 Workstreams × 3 Sourcing-Optionen (In-house / Fiverr-
+  Freelance / Agentur), pro Zeile klickbar; Raten-Stress ×0.6–1.8 und
+  Contingency-Regler. Auswahl persistiert.
+- **Modell** — 36 Monate, drei Szenarien, zwei Canvas-Charts (Umsatz vs.
+  Kosten inkl. Schuldendienst mit Break-even-Marker; kumulierte Liquidität mit
+  Trough-Marker). Fazilität = Trough ×1,2 gerundet, Annuität, DSCR m18,
+  Payback. Verdict-Logik denkt wie ein Kreditsachbearbeiter: warnt bei
+  DSCR < 1,2, bei nicht tragfähigem konservativem Fall, bei Break-even > 36 M.
+- **Financing** — KfW-StartGeld/Bürgschaftsbank als Instrumente (Konditionen
+  als Regler, keine erfundenen Quoten), selbst vorgeschlagene Covenants,
+  „was die Bank verlangt“, „was den Antrag killt“, Fallback ohne Kredit.
+- **Risk-Register**, Operator-Matrix, Sticky-Bar mit Live-Summen.
+- **Cmd+P** schaltet per Print-Stylesheet auf helles Bank-Dokument um;
+  Charts zeichnen sich über beforeprint neu.
+
+Verifiziert mit `probe.js` (jetzt mit `awaitPromise`): Default-Selektion
+€9.603 Build = Handrechnung; Agency-Klick bei ×1,5-Stress kippt das Verdict
+korrekt auf die DSCR-Warnung; Grid-`min-width:0`-Fix gegen mobiles Overflow.

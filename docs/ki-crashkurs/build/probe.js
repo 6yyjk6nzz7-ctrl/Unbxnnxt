@@ -29,7 +29,7 @@ class CDP{constructor(ws){this.ws=ws;this.id=0;this.p=new Map();this.h=new Map()
   await Promise.race([loaded,sleep(15000)]);
   await cdp.send('Runtime.evaluate',{expression:'document.fonts?document.fonts.ready.then(()=>1):1',awaitPromise:true},sessionId);
   await sleep(600);
-  const r=await cdp.send('Runtime.evaluate',{expression:expr,returnByValue:true},sessionId);
+  const r=await cdp.send('Runtime.evaluate',{expression:expr,returnByValue:true,awaitPromise:true},sessionId);
   console.log(JSON.stringify(r.result.value,null,2));
   ws.close(); ch.kill('SIGKILL'); fs.rmSync(dir,{recursive:true,force:true}); process.exit(0);
 })().catch(e=>{console.error('FAIL',e.message);try{ch.kill('SIGKILL');}catch(_){}process.exit(1);});
